@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../provider/auth_provider.dart';
+import '../view_model/auth_view_model.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text;
 
     if (name.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
-      context.read<AuthProvider>().register(
+      context.read<AuthViewModel>().register(
         name: name,
         email: email,
         password: password,
@@ -46,9 +46,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Cadastro')),
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
-          if (authProvider.status == AuthStatus.loading) {
+      body: Consumer<AuthViewModel>(
+        builder: (context, authViewModel, _) {
+          if (authViewModel.status == AuthStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -56,14 +56,14 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                if (authProvider.status == AuthStatus.error) ...[
+                if (authViewModel.status == AuthStatus.error) ...[
                   Text(
-                    authProvider.errorMessage ?? 'Erro',
+                    authViewModel.errorMessage ?? 'Erro',
                     style: const TextStyle(color: Colors.red),
                   ),
                   const SizedBox(height: 16),
                 ],
-                if (authProvider.status == AuthStatus.success) ...[
+                if (authViewModel.status == AuthStatus.success) ...[
                   const Text(
                     'Conta criada com sucesso!',
                     style: TextStyle(color: Colors.green),

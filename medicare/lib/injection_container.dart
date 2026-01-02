@@ -7,7 +7,7 @@ import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/infra/datasources/auth_remote_datasource.dart';
 import 'features/auth/infra/repositories/auth_repository_impl.dart';
-import 'features/auth/presentation/provider/auth_provider.dart';
+import 'features/auth/ui/view_model/auth_view_model.dart';
 
 final sl = GetIt.instance;
 
@@ -31,9 +31,9 @@ Future<void> init() async {
   );
 
   //! Features - Auth
-  // Provider
+  // ViewModel
   sl.registerFactory(
-    () => AuthProvider(loginUseCase: sl(), registerUseCase: sl()),
+    () => AuthViewModel(loginUseCase: sl(), registerUseCase: sl()),
   );
 
   // UseCases

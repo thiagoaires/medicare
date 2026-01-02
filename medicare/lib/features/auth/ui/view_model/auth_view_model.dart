@@ -5,11 +5,11 @@ import '../../domain/usecases/register_usecase.dart';
 
 enum AuthStatus { initial, loading, success, error }
 
-class AuthProvider extends ChangeNotifier {
+class AuthViewModel extends ChangeNotifier {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
 
-  AuthProvider({required this.loginUseCase, required this.registerUseCase});
+  AuthViewModel({required this.loginUseCase, required this.registerUseCase});
 
   AuthStatus _status = AuthStatus.initial;
   AuthStatus get status => _status;

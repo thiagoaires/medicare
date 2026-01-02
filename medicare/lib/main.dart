@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'features/auth/presentation/provider/auth_provider.dart';
-import 'features/auth/presentation/pages/login_page.dart';
+import 'features/auth/ui/view_model/auth_view_model.dart';
+import 'features/auth/ui/widgets/login_screen.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -16,11 +16,13 @@ class MedicareApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => di.sl<AuthProvider>())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => di.sl<AuthViewModel>()),
+      ],
       child: MaterialApp(
         title: 'Medicare TCC',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: const LoginPage(),
+        home: const LoginScreen(),
       ),
     );
   }

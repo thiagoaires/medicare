@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../provider/auth_provider.dart';
-import 'register_page.dart';
+import '../view_model/auth_view_model.dart';
+import 'register_screen.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     if (email.isNotEmpty && password.isNotEmpty) {
-      context.read<AuthProvider>().login(email, password);
+      context.read<AuthViewModel>().login(email, password);
     } else {
       ScaffoldMessenger.of(
         context,
@@ -38,20 +38,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
-          // Listen for state changes (side effects are tricky in build, but for simple snackbars we can use a listener or check status change)
-          // Ideally, use a addPostFrameCallback or a separate listener widget.
-          // For simplicity in Provider, we often handle side effects in the view explicitly or use a package like provider_architecture or just check state in build carefully.
-          // However, showing SnackBar during build is forbidden.
-          // Better approach: use a cohesive listener pattern or Check status in `didUpdateWidget` or similar.
-          // Given the prompt "simple but functional", I will check status and show snackbar only if it changed? No, that triggers every build.
-          // Correct pattern with vanilla Provider: Use `addListener` in `initState` or similar.
-          // Refactoring to keep it simple: We will handle navigation/snackbar in the button callback await?
-          // No, the provider is void.
-          // Let's stick to a Listener wrapper widget or add a listener in initState.
-
-          if (authProvider.status == AuthStatus.loading) {
+      body: Consumer<AuthViewModel>(
+        builder: (context, authViewModel, _) {
+          if (authViewModel.status == AuthStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -60,16 +49,16 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (authProvider.status == AuthStatus.error) ...[
+                if (authViewModel.status == AuthStatus.error) ...[
                   Text(
-                    authProvider.errorMessage ?? 'Erro',
+                    authViewModel.errorMessage ?? 'Erro',
                     style: const TextStyle(color: Colors.red),
                   ),
                   const SizedBox(height: 16),
                 ],
-                if (authProvider.status == AuthStatus.success) ...[
+                if (authViewModel.status == AuthStatus.success) ...[
                   Text(
-                    'Bem-vindo, ${authProvider.user?.name}!',
+                    'Bem-vindo, ${authViewModel.user?.name}!',
                     style: const TextStyle(color: Colors.green),
                   ),
                   const SizedBox(height: 16),
@@ -96,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const RegisterPage()),
+                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
                     );
                   },
                   child: const Text('Não tem conta? Cadastre-se'),
