@@ -15,6 +15,9 @@ migrate_working_dir/
 # VSCode related
 .vscode/
 
+# Antigravity related
+.antigravity/
+
 # IntelliJ related
 *.iml
 *.ipr
