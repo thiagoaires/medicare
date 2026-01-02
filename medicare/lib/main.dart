@@ -37,8 +37,13 @@ class MedicareApp extends StatelessWidget {
     return MaterialApp(
       title: 'Medicare TCC',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const Scaffold(
-        body: Center(child: Text('Medicare Conectado via .env!')),
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Image.asset('assets/images/logo.webp', width: 150)],
+          ),
+        ),
       ),
     );
   }

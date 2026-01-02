@@ -28,7 +28,7 @@ Estas são regras que, se quebradas, violam a integridade arquitetural do projet
 
 3.  **Gerenciamento de Erros:**
     -   **NUNCA** lance exceções (`throw Exception`) nas camadas de Domínio ou Apresentação.
-    -   Capture as exceções na camada de `Infra` e converta-as para `Failures` (usando a classe `Either` do pacote `dartz`).
+    -   Capture as exceções na camada de `Infra` e converta-as para `Failures` (usando a classe `Either` do pacote `fpdart`).
 
 4.  **Sem "God Classes":**
     -   Se um arquivo exceder 200 linhas, analise se ele está violando o Princípio de Responsabilidade Única (SRP) e sugira uma refatoração.
@@ -60,7 +60,7 @@ Utilize apenas as bibliotecas já estabelecidas no projeto. **Não alucine novas
 
 -   **Linguagem:** Dart 3.x (Use `sealed classes`, `records` e `patterns` quando apropriado).
 -   **Framework:** Flutter.
--   **Programação Funcional:** `dartz` (Obrigatório para tratamento de erros com `Either`).
+-   **Programação Funcional:** `fpdart` (Obrigatório para tratamento de erros com `Either`).
 -   **Injeção de Dependência:** `get_it` e `injectable` (ou `flutter_modular` se configurado).
 -   **Testes:** `mockito` para criar mocks dos repositórios nos testes de unidade.
 
@@ -73,11 +73,11 @@ Utilize apenas as bibliotecas já estabelecidas no projeto. **Não alucine novas
 **Sua Resposta Mental:**
 1.  *Verificar:* Onde isso fica? -> `features/auth/domain/usecases/logout_user_usecase.dart`.
 2.  *Dependência:* Preciso do `AuthRepository`.
-3.  *Retorno:* `Future<Either<Failure, Unit>>` (Unit é o void do dartz).
+3.  *Retorno:* `Future<Either<Failure, Unit>>` (Unit é o void do fpdart).
 
 **Código Gerado:**
 ```dart
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 import '../../../../core/errors/failures.dart';
 import '../repositories/auth_repository.dart';
 

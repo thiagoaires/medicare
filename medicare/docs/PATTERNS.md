@@ -3,7 +3,7 @@
 
 Este documento serve como referência de implementação para o projeto Medicare. Utilize estes padrões para manter a consistência cognitiva e técnica do código.
 
-## 1. Tratamento de Erros Funcional (`dartz`)
+## 1. Tratamento de Erros Funcional (`fpdart`)
 
 **Contexto:** Não utilizamos `try/catch` nas camadas de Domínio ou Apresentação para fluxo de controle. Exceções devem ser capturadas na camada de `Infra` (Repository Implementation) e convertidas para `Failures`.
 
@@ -11,7 +11,7 @@ Este documento serve como referência de implementação para o projeto Medicare
 
 **Exemplo (Contrato do Repositório):**
 ```dart
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 import '../../core/errors/failures.dart';
 import '../entities/patient_entity.dart';
 
