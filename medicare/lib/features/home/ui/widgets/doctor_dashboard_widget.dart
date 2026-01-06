@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../auth/ui/view_model/auth_view_model.dart';
+import '../view_model/home_view_model.dart';
 
-class DoctorDashboardWidget extends StatelessWidget {
+class DoctorDashboardWidget extends StatefulWidget {
   const DoctorDashboardWidget({super.key});
 
   @override
+  State<DoctorDashboardWidget> createState() => _DoctorDashboardWidgetState();
+}
+
+class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = context.read<AuthViewModel>().user;
+      if (user != null) {
+        context.read<HomeViewModel>().fetchDoctorStats(user.id);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Watch AuthViewModel mainly for the name
     final user = context.select<AuthViewModel, dynamic>((vm) => vm.user);
 
     return SingleChildScrollView(
@@ -19,33 +37,46 @@ class DoctorDashboardWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 24),
-          const Row(
-            children: [
-              Expanded(
-                child: _DashboardCard(
-                  title: 'Planos Ativos',
-                  value: '5',
-                  icon: Icons.assignment_turned_in,
-                  color: Colors.blueAccent,
-                ),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: _DashboardCard(
-                  title: 'Pacientes',
-                  value: '12',
-                  icon: Icons.people,
-                  color: Colors.green,
-                ),
-              ),
-            ],
+          Consumer<HomeViewModel>(
+            builder: (context, viewModel, _) {
+              if (viewModel.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final stats = viewModel.stats;
+              final totalPlans = stats?.totalPlans ?? 0;
+              final checkInsToday = stats?.checkInsToday ?? 0;
+
+              return Row(
+                children: [
+                  Expanded(
+                    child: _DashboardCard(
+                      title: 'Planos Ativos',
+                      value: '$totalPlans',
+                      icon: Icons.assignment,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _DashboardCard(
+                      title: 'Adesão Hoje',
+                      value: '$checkInsToday',
+                      icon: Icons.check_circle,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 16),
+          // Placeholder para futuras implementações
           const _DashboardCard(
             title: 'Próximas Consultas',
-            value: '3 Hoje',
+            value: '-',
             icon: Icons.calendar_today,
-            color: Colors.orange,
+            color: Colors.grey,
           ),
         ],
       ),

@@ -35,25 +35,12 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
   Future<Either<Failure, List<CarePlanEntity>>> getPlansByDoctorId(
     String doctorId,
   ) async {
-    print(
-      'DEBUG: [CarePlanRepository] getPlansByDoctorId called for $doctorId',
-    );
     try {
       final models = await dataSource.get(doctorId: doctorId);
-      print(
-        'DEBUG: [CarePlanRepository] getPlansByDoctorId success: ${models.length} found.',
-      );
       return Right(models);
     } on ServerException catch (e) {
-      print(
-        'DEBUG: [CarePlanRepository] getPlansByDoctorId ServerException: ${e.message}',
-      );
       return Left(ServerFailure(e.message));
-    } catch (e, stackTrace) {
-      print(
-        'DEBUG: [CarePlanRepository] getPlansByDoctorId Unexpected Error: $e',
-      );
-      print('DEBUG: StackTrace: $stackTrace');
+    } catch (e) {
       return const Left(ServerFailure('Unexpected error fetching plans'));
     }
   }
@@ -62,21 +49,12 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
   Future<Either<Failure, List<CarePlanEntity>>> getPlansByPatientId(
     String patientId,
   ) async {
-    print(
-      'DEBUG: [CarePlanRepository] getPlansByPatientId called for $patientId',
-    );
     try {
       final models = await dataSource.get(patientId: patientId);
-      print(
-        'DEBUG: [CarePlanRepository] getPlansByPatientId success: ${models.length} found.',
-      );
       return Right(models);
     } on ServerException catch (e) {
-      print('DEBUG: [CarePlanRepository] ServerException: ${e.message}');
       return Left(ServerFailure(e.message));
-    } catch (e, stackTrace) {
-      print('DEBUG: [CarePlanRepository] Unexpected Error: $e');
-      print('DEBUG: StackTrace: $stackTrace');
+    } catch (e) {
       return const Left(ServerFailure('Unexpected error fetching plans'));
     }
   }

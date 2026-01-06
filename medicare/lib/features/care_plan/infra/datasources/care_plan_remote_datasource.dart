@@ -36,9 +36,6 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
 
   @override
   Future<List<CarePlanModel>> get({String? patientId, String? doctorId}) async {
-    print(
-      'DEBUG: [CarePlanDataSource] get called. patientId: $patientId, doctorId: $doctorId',
-    );
     final query = QueryBuilder<ParseObject>(ParseObject('CarePlan'));
 
     if (patientId != null) {
@@ -47,9 +44,6 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
 
     if (doctorId != null) {
       // Pointer comparison
-      print(
-        'DEBUG: [CarePlanDataSource] creating Pointer for doctor $doctorId',
-      );
       final doctorPointer = ParseUser(null, null, null)..objectId = doctorId;
       query.whereEqualTo('doctor', doctorPointer.toPointer());
     }
@@ -57,28 +51,19 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     // Include doctor details if needed, but for now just the plan
     // query.includeObject(['doctor']);
 
-    print('DEBUG: [CarePlanDataSource] executing query...');
     final response = await query.query();
-    print(
-      'DEBUG: [CarePlanDataSource] query response: success=${response.success}, count=${response.count}, results=${response.results?.length}',
-    );
 
     if (response.success && response.results != null) {
       try {
         return (response.results as List<ParseObject>)
             .map((e) => CarePlanModel.fromParse(e))
             .toList();
-      } catch (e, s) {
-        print('DEBUG: [CarePlanDataSource] Mapping Error: $e');
-        print(s);
+      } catch (e) {
         throw ServerException(message: 'Error mapping data: $e');
       }
     } else if (response.success && response.results == null) {
       return [];
     } else {
-      print(
-        'DEBUG: [CarePlanDataSource] Parse Error: ${response.error?.message}',
-      );
       throw ServerException(
         message: response.error?.message ?? 'Error fetching plans',
       );

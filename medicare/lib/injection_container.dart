@@ -29,6 +29,7 @@ import 'features/check_in/domain/usecases/perform_check_in_usecase.dart';
 import 'features/check_in/infra/datasources/check_in_remote_datasource.dart';
 import 'features/check_in/infra/repositories/check_in_repository_impl.dart';
 import 'features/check_in/ui/view_model/check_in_view_model.dart';
+import 'features/home/domain/usecases/get_doctor_stats_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -76,7 +77,14 @@ Future<void> init() async {
   );
 
   //! Features - Home
-  sl.registerFactory(() => HomeViewModel());
+  sl.registerFactory(() => HomeViewModel(getDoctorStatsUseCase: sl()));
+
+  sl.registerLazySingleton(
+    () => GetDoctorStatsUseCase(
+      carePlanRepository: sl(),
+      checkInRepository: sl(),
+    ),
+  );
 
   // UseCases
   sl.registerLazySingleton(() => CreateCarePlanUseCase(sl()));

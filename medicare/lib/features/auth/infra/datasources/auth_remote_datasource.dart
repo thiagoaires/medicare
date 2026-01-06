@@ -16,25 +16,14 @@ abstract class AuthRemoteDataSource {
 class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> login(String email, String password) async {
-    print('DEBUG: [AuthRemoteDataSource] Attempting login for $email');
     final user = ParseUser(email, password, null);
 
     // O ParseSDK faz a mágica de rede aqui
     var response = await user.login();
 
-    print(
-      'DEBUG: [AuthRemoteDataSource] Login response success: ${response.success}',
-    );
-
     if (response.success) {
-      print(
-        'DEBUG: [AuthRemoteDataSource] Login successful. User: ${response.result}',
-      );
       return UserModel.fromParse(response.result as ParseUser);
     } else {
-      print(
-        'DEBUG: [AuthRemoteDataSource] Login failed. Error: ${response.error?.message}',
-      );
       // Tratamento de erro do Parse
       throw ServerException(
         message: response.error?.message ?? 'Erro desconhecido',

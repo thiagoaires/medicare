@@ -23,25 +23,18 @@ class AuthViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> login(String email, String password) async {
-    print('DEBUG: [AuthViewModel] Login called. Setting status to loading.');
     _status = AuthStatus.loading;
     notifyListeners();
 
-    print('DEBUG: [AuthViewModel] Invoking loginUseCase...');
     final result = await loginUseCase(email, password);
-    print('DEBUG: [AuthViewModel] loginUseCase returned.');
 
     result.fold(
       (failure) {
-        print(
-          'DEBUG: [AuthViewModel] Login failed with failure: ${failure.message}',
-        );
         _status = AuthStatus.error;
         _errorMessage = failure.message;
         notifyListeners();
       },
       (user) {
-        print('DEBUG: [AuthViewModel] Login success. User: ${user.name}');
         _status = AuthStatus.success;
         _user = user;
         notifyListeners();
