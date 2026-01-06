@@ -15,6 +15,7 @@ import 'features/care_plan/domain/usecases/get_plans_usecase.dart';
 import 'features/care_plan/infra/datasources/care_plan_remote_datasource.dart';
 import 'features/care_plan/infra/repositories/care_plan_repository_impl.dart';
 import 'features/care_plan/ui/view_model/care_plan_view_model.dart';
+import 'features/home/ui/view_model/home_view_model.dart';
 
 final sl = GetIt.instance;
 
@@ -60,6 +61,9 @@ Future<void> init() async {
   sl.registerFactory(
     () => CarePlanViewModel(createCarePlanUseCase: sl(), getPlansUseCase: sl()),
   );
+
+  //! Features - Home
+  sl.registerFactory(() => HomeViewModel());
 
   // UseCases
   sl.registerLazySingleton(() => CreateCarePlanUseCase(sl()));

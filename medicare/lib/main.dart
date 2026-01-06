@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/auth/ui/view_model/auth_view_model.dart';
 import 'features/auth/ui/widgets/login_screen.dart';
+import 'features/home/ui/widgets/home_screen.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -23,6 +24,12 @@ class MedicareApp extends StatelessWidget {
         title: 'Medicare TCC',
         theme: ThemeData(primarySwatch: Colors.blue),
         home: const LoginScreen(),
+        routes: {
+          '/home': (context) {
+            final args = ModalRoute.of(context)!.settings.arguments as String;
+            return HomeScreen(userType: args);
+          },
+        },
       ),
     );
   }

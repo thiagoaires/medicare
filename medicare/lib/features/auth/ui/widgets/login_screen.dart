@@ -57,11 +57,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                 ],
                 if (authViewModel.status == AuthStatus.success) ...[
-                  Text(
-                    'Bem-vindo, ${authViewModel.user?.name}!',
-                    style: const TextStyle(color: Colors.green),
+                  // Auto navigate if success (handled by build side-effect or add listener,
+                  // but effectively replacing the success message or adding logic here)
+                  // Ideally use addPostFrameCallback or listen in initState/didChangeDependencies
+                  // But for quick implementation as requested:
+                  Builder(
+                    builder: (context) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        // Navigate to Home
+                        final user = authViewModel.user;
+                        if (user != null) {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            '/home',
+                            arguments: user.type,
+                          );
+                        }
+                      });
+                      return const SizedBox.shrink();
+                    },
                   ),
-                  const SizedBox(height: 16),
                 ],
 
                 TextField(
