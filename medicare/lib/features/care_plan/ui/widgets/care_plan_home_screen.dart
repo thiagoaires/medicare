@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/care_plan_view_model.dart';
 import 'create_care_plan_screen.dart';
+import '../../../check_in/ui/widgets/daily_check_in_button.dart';
+import '../../../check_in/ui/view_model/check_in_view_model.dart';
+import '../../../../injection_container.dart';
 
 class CarePlanHomeScreen extends StatefulWidget {
   const CarePlanHomeScreen({super.key});
@@ -52,16 +55,30 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
             return const Center(child: Text('Nenhum plano encontrado.'));
           }
 
-          return ListView.builder(
-            itemCount: viewModel.plans.length,
-            itemBuilder: (context, index) {
-              final plan = viewModel.plans[index];
-              return ListTile(
-                title: Text(plan.title),
-                subtitle: Text(plan.description),
-                trailing: Text(plan.startDate.toString().split(' ')[0]),
-              );
-            },
+          return Column(
+            children: [
+              if (!isDoctor && viewModel.plans.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ChangeNotifierProvider(
+                    create: (_) => sl<CheckInViewModel>(),
+                    child: DailyCheckInButton(planId: viewModel.plans.first.id),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: viewModel.plans.length,
+                  itemBuilder: (context, index) {
+                    final plan = viewModel.plans[index];
+                    return ListTile(
+                      title: Text(plan.title),
+                      subtitle: Text(plan.description),
+                      trailing: Text(plan.startDate.toString().split(' ')[0]),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),

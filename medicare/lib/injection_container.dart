@@ -23,6 +23,12 @@ import 'features/profile/domain/usecases/update_profile_usecase.dart';
 import 'features/profile/infra/datasources/profile_remote_datasource.dart';
 import 'features/profile/infra/repositories/profile_repository_impl.dart';
 import 'features/profile/ui/view_model/profile_view_model.dart';
+import 'features/check_in/domain/repositories/check_in_repository.dart';
+import 'features/check_in/domain/usecases/get_plan_history_usecase.dart';
+import 'features/check_in/domain/usecases/perform_check_in_usecase.dart';
+import 'features/check_in/infra/datasources/check_in_remote_datasource.dart';
+import 'features/check_in/infra/repositories/check_in_repository_impl.dart';
+import 'features/check_in/ui/view_model/check_in_view_model.dart';
 
 final sl = GetIt.instance;
 
@@ -109,5 +115,28 @@ Future<void> init() async {
   // DataSource
   sl.registerLazySingleton<ProfileRemoteDataSource>(
     () => ParseProfileDataSourceImpl(),
+  );
+
+  //! Features - Check-In
+  // ViewModel
+  sl.registerFactory(
+    () => CheckInViewModel(
+      performCheckInUseCase: sl(),
+      getPlanHistoryUseCase: sl(),
+    ),
+  );
+
+  // UseCases
+  sl.registerLazySingleton(() => PerformCheckInUseCase(sl()));
+  sl.registerLazySingleton(() => GetPlanHistoryUseCase(sl()));
+
+  // Repository
+  sl.registerLazySingleton<CheckInRepository>(
+    () => CheckInRepositoryImpl(sl()),
+  );
+
+  // DataSource
+  sl.registerLazySingleton<CheckInRemoteDataSource>(
+    () => ParseCheckInDataSourceImpl(),
   );
 }

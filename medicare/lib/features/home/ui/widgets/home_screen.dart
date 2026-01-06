@@ -15,8 +15,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => sl<HomeViewModel>(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => sl<HomeViewModel>()),
+        ChangeNotifierProvider(create: (_) => sl<CarePlanViewModel>()),
+        ChangeNotifierProvider(create: (_) => sl<ProfileViewModel>()),
+      ],
       child: Scaffold(
         body: Consumer<HomeViewModel>(
           builder: (context, viewModel, _) {
@@ -26,25 +30,10 @@ class HomeScreen extends StatelessWidget {
             final List<Widget> pages = isDoctor
                 ? [
                     const DoctorDashboardWidget(),
-                    ChangeNotifierProvider(
-                      create: (_) => sl<CarePlanViewModel>(),
-                      child: const CarePlanHomeScreen(),
-                    ),
-                    ChangeNotifierProvider(
-                      create: (_) => sl<ProfileViewModel>(),
-                      child: const ProfileScreen(),
-                    ),
+                    const CarePlanHomeScreen(),
+                    const ProfileScreen(),
                   ]
-                : [
-                    ChangeNotifierProvider(
-                      create: (_) => sl<CarePlanViewModel>(),
-                      child: const CarePlanHomeScreen(),
-                    ),
-                    ChangeNotifierProvider(
-                      create: (_) => sl<ProfileViewModel>(),
-                      child: const ProfileScreen(),
-                    ),
-                  ];
+                : [const CarePlanHomeScreen(), const ProfileScreen()];
 
             return IndexedStack(index: viewModel.currentIndex, children: pages);
           },
