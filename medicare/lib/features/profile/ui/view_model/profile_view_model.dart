@@ -53,7 +53,7 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveProfile(String name, String phone) async {
+  Future<void> saveProfile(String name, String phone, String? crm) async {
     if (_profile == null) return;
 
     // Clean phone number (formatting)
@@ -69,7 +69,7 @@ class ProfileViewModel extends ChangeNotifier {
       name: name,
       email: _profile!.email,
       userType: _profile!.userType,
-      crm: _profile!.crm,
+      crm: crm, // Use new CRM
       phone: cleanPhone,
     );
 

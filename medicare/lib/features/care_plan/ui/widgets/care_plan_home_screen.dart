@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/care_plan_view_model.dart';
-import 'create_care_plan_screen.dart';
+import 'care_plan_form_screen.dart';
 import '../../../check_in/ui/widgets/daily_check_in_button.dart';
 import '../../../check_in/ui/view_model/check_in_view_model.dart';
 import '../../../../injection_container.dart';
@@ -29,6 +29,28 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
         ); // user.type field name correction
       }
     });
+  }
+
+  void _navigateToForm({dynamic plan}) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider.value(
+          value: context.read<CarePlanViewModel>(),
+          child: CarePlanFormScreen(planToEdit: plan),
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (result == true) {
+      // Refresh list
+      final user = context.read<AuthViewModel>().user;
+      if (user != null) {
+        context.read<CarePlanViewModel>().fetchPlans(user.id, user.type);
+      }
+    }
   }
 
   @override
@@ -70,10 +92,38 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                   itemCount: viewModel.plans.length,
                   itemBuilder: (context, index) {
                     final plan = viewModel.plans[index];
-                    return ListTile(
-                      title: Text(plan.title),
-                      subtitle: Text(plan.description),
-                      trailing: Text(plan.startDate.toString().split(' ')[0]),
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: ListTile(
+                        title: Text(plan.title),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(plan.description),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Paciente: ${plan.patientName ?? plan.patientId}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(plan.startDate.toString().split(' ')[0]),
+                            if (isDoctor)
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => _navigateToForm(plan: plan),
+                              ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -84,28 +134,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
       ),
       floatingActionButton: isDoctor
           ? FloatingActionButton(
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ChangeNotifierProvider.value(
-                      value: context.read<CarePlanViewModel>(),
-                      child: const CreateCarePlanScreen(),
-                    ),
-                  ),
-                );
-
-                if (result == true && mounted) {
-                  // Refresh list
-                  final user = context.read<AuthViewModel>().user;
-                  if (user != null) {
-                    context.read<CarePlanViewModel>().fetchPlans(
-                      user.id,
-                      user.type,
-                    );
-                  }
-                }
-              },
+              onPressed: () => _navigateToForm(),
               child: const Icon(Icons.add),
             )
           : null,

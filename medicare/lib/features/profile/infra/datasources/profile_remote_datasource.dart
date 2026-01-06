@@ -38,6 +38,9 @@ class ParseProfileDataSourceImpl implements ProfileRemoteDataSource {
     if (profile.phone != null) {
       user.set('phone', profile.phone);
     }
+    if (profile.crm != null) {
+      user.set('crm', profile.crm);
+    }
 
     final response = await user.save();
     if (!response.success) {

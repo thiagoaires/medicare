@@ -14,12 +14,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
+  late TextEditingController _crmController;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
+    _crmController = TextEditingController();
 
     // Load profile on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -31,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _crmController.dispose();
     super.dispose();
   }
 
@@ -45,6 +48,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _phoneController.text = PhoneInputFormatter.format(
           viewModel.profile!.phone ?? '',
         );
+      }
+      if (_crmController.text != (viewModel.profile!.crm ?? '')) {
+        _crmController.text = viewModel.profile!.crm ?? '';
       }
     }
   }
@@ -66,6 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     viewModel.saveProfile(
                       _nameController.text,
                       _phoneController.text,
+                      _crmController.text,
                     );
                   } else {
                     viewModel.toggleEdit();
@@ -149,11 +156,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 if (profile.userType == 'medico') ...[
                   const SizedBox(height: 16),
                   TextFormField(
-                    initialValue: profile.crm,
-                    readOnly: true,
-                    decoration: const InputDecoration(
+                    controller: _crmController,
+                    readOnly: !viewModel.isEditing,
+                    decoration: InputDecoration(
                       labelText: 'CRM',
-                      border: InputBorder.none,
+                      border: viewModel.isEditing
+                          ? const OutlineInputBorder()
+                          : InputBorder.none,
                     ),
                   ),
                 ],

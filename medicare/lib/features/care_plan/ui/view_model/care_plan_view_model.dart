@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/care_plan_entity.dart';
 import '../../domain/usecases/create_care_plan_usecase.dart';
 import '../../domain/usecases/get_plans_usecase.dart';
+import '../../domain/usecases/update_care_plan_usecase.dart';
 
 class CarePlanViewModel extends ChangeNotifier {
   final CreateCarePlanUseCase createCarePlanUseCase;
   final GetPlansUseCase getPlansUseCase;
+  final UpdateCarePlanUseCase updateCarePlanUseCase;
 
   CarePlanViewModel({
     required this.createCarePlanUseCase,
     required this.getPlansUseCase,
+    required this.updateCarePlanUseCase,
   });
 
   bool isLoading = false;
   String? errorMessage;
   List<CarePlanEntity> plans = [];
+
+  // ... fetchPlans ...
 
   Future<void> fetchPlans(String userId, String userType) async {
     isLoading = true;
@@ -55,12 +60,30 @@ class CarePlanViewModel extends ChangeNotifier {
         notifyListeners();
       },
       (_) {
-        // Success
         isLoading = false;
-        // Optionally fetch plans again if we knew the user type/id here,
-        // OR add to list manually if we returned the created object (but usecase returns Unit).
-        // For now, let's just notify success logic in UI or refresh manually.
         notifyListeners();
+      },
+    );
+  }
+
+  Future<bool> updatePlan(CarePlanEntity plan) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    final result = await updateCarePlanUseCase(plan);
+
+    return result.fold(
+      (failure) {
+        errorMessage = failure.message;
+        isLoading = false;
+        notifyListeners();
+        return false;
+      },
+      (_) {
+        isLoading = false;
+        notifyListeners();
+        return true;
       },
     );
   }

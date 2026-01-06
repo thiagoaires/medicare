@@ -12,6 +12,7 @@ import 'features/auth/ui/view_model/auth_view_model.dart';
 import 'features/care_plan/domain/repositories/care_plan_repository.dart';
 import 'features/care_plan/domain/usecases/create_care_plan_usecase.dart';
 import 'features/care_plan/domain/usecases/get_plans_usecase.dart';
+import 'features/care_plan/domain/usecases/update_care_plan_usecase.dart';
 import 'features/care_plan/infra/datasources/care_plan_remote_datasource.dart';
 import 'features/care_plan/infra/repositories/care_plan_repository_impl.dart';
 import 'features/care_plan/ui/view_model/care_plan_view_model.dart';
@@ -73,7 +74,11 @@ Future<void> init() async {
   //! Features - CarePlan
   // ViewModel
   sl.registerFactory(
-    () => CarePlanViewModel(createCarePlanUseCase: sl(), getPlansUseCase: sl()),
+    () => CarePlanViewModel(
+      createCarePlanUseCase: sl(),
+      getPlansUseCase: sl(),
+      updateCarePlanUseCase: sl(),
+    ),
   );
 
   //! Features - Home
@@ -89,6 +94,7 @@ Future<void> init() async {
   // UseCases
   sl.registerLazySingleton(() => CreateCarePlanUseCase(sl()));
   sl.registerLazySingleton(() => GetPlansUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateCarePlanUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<CarePlanRepository>(
