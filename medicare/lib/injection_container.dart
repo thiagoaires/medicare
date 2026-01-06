@@ -9,6 +9,13 @@ import 'features/auth/infra/datasources/auth_remote_datasource.dart';
 import 'features/auth/infra/repositories/auth_repository_impl.dart';
 import 'features/auth/ui/view_model/auth_view_model.dart';
 
+import 'features/care_plan/domain/repositories/care_plan_repository.dart';
+import 'features/care_plan/domain/usecases/create_care_plan_usecase.dart';
+import 'features/care_plan/domain/usecases/get_plans_usecase.dart';
+import 'features/care_plan/infra/datasources/care_plan_remote_datasource.dart';
+import 'features/care_plan/infra/repositories/care_plan_repository_impl.dart';
+import 'features/care_plan/ui/view_model/care_plan_view_model.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -46,5 +53,25 @@ Future<void> init() async {
   // DataSource
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => ParseAuthDataSourceImpl(),
+  );
+
+  //! Features - CarePlan
+  // ViewModel
+  sl.registerFactory(
+    () => CarePlanViewModel(createCarePlanUseCase: sl(), getPlansUseCase: sl()),
+  );
+
+  // UseCases
+  sl.registerLazySingleton(() => CreateCarePlanUseCase(sl()));
+  sl.registerLazySingleton(() => GetPlansUseCase(sl()));
+
+  // Repository
+  sl.registerLazySingleton<CarePlanRepository>(
+    () => CarePlanRepositoryImpl(sl()),
+  );
+
+  // DataSource
+  sl.registerLazySingleton<CarePlanRemoteDataSource>(
+    () => ParseCarePlanDataSourceImpl(),
   );
 }

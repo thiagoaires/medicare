@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:medicare/features/core/errors/exceptions.dart';
-import 'package:medicare/features/core/errors/failures.dart';
+import '../../../core/errors/exceptions.dart';
+import '../../../core/errors/failures.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_datasource.dart';
