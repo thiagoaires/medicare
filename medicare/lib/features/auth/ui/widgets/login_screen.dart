@@ -21,12 +21,33 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _onLogin() {
+  Future<void> _onLogin() async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
     if (email.isNotEmpty && password.isNotEmpty) {
-      context.read<AuthViewModel>().login(email, password);
+      final authViewModel = context.read<AuthViewModel>();
+      await authViewModel.login(email, password);
+
+      if (!mounted) return;
+
+      if (authViewModel.status == AuthStatus.success) {
+        final user = authViewModel.user;
+        if (user != null) {
+          Navigator.pushReplacementNamed(
+            context,
+            '/home',
+            arguments: user.type,
+          );
+        }
+      } else if (authViewModel.status == AuthStatus.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authViewModel.errorMessage ?? 'Erro'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(
         context,
@@ -49,36 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (authViewModel.status == AuthStatus.error) ...[
-                  Text(
-                    authViewModel.errorMessage ?? 'Erro',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (authViewModel.status == AuthStatus.success) ...[
-                  // Auto navigate if success (handled by build side-effect or add listener,
-                  // but effectively replacing the success message or adding logic here)
-                  // Ideally use addPostFrameCallback or listen in initState/didChangeDependencies
-                  // But for quick implementation as requested:
-                  Builder(
-                    builder: (context) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        // Navigate to Home
-                        final user = authViewModel.user;
-                        if (user != null) {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            '/home',
-                            arguments: user.type,
-                          );
-                        }
-                      });
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ],
-
                 TextField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),

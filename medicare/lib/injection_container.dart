@@ -16,6 +16,13 @@ import 'features/care_plan/infra/datasources/care_plan_remote_datasource.dart';
 import 'features/care_plan/infra/repositories/care_plan_repository_impl.dart';
 import 'features/care_plan/ui/view_model/care_plan_view_model.dart';
 import 'features/home/ui/view_model/home_view_model.dart';
+import 'features/profile/domain/repositories/profile_repository.dart';
+import 'features/profile/domain/usecases/get_profile_usecase.dart';
+import 'features/profile/domain/usecases/logout_usecase.dart';
+import 'features/profile/domain/usecases/update_profile_usecase.dart';
+import 'features/profile/infra/datasources/profile_remote_datasource.dart';
+import 'features/profile/infra/repositories/profile_repository_impl.dart';
+import 'features/profile/ui/view_model/profile_view_model.dart';
 
 final sl = GetIt.instance;
 
@@ -77,5 +84,30 @@ Future<void> init() async {
   // DataSource
   sl.registerLazySingleton<CarePlanRemoteDataSource>(
     () => ParseCarePlanDataSourceImpl(),
+  );
+
+  //! Features - Profile
+  // ViewModel
+  sl.registerFactory(
+    () => ProfileViewModel(
+      getProfileUseCase: sl(),
+      updateProfileUseCase: sl(),
+      logoutUseCase: sl(),
+    ),
+  );
+
+  // UseCases
+  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
+
+  // Repository
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl()),
+  );
+
+  // DataSource
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ParseProfileDataSourceImpl(),
   );
 }

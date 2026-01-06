@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../../injection_container.dart';
 import '../../../care_plan/ui/widgets/care_plan_home_screen.dart';
 import '../../../care_plan/ui/view_model/care_plan_view_model.dart';
+import '../../../profile/ui/view_model/profile_view_model.dart';
+import '../../../profile/ui/widgets/profile_screen.dart';
 import '../view_model/home_view_model.dart';
 import 'doctor_dashboard_widget.dart';
 
@@ -28,14 +30,20 @@ class HomeScreen extends StatelessWidget {
                       create: (_) => sl<CarePlanViewModel>(),
                       child: const CarePlanHomeScreen(),
                     ),
-                    const Center(child: Text('Perfil do Médico')),
+                    ChangeNotifierProvider(
+                      create: (_) => sl<ProfileViewModel>(),
+                      child: const ProfileScreen(),
+                    ),
                   ]
                 : [
                     ChangeNotifierProvider(
                       create: (_) => sl<CarePlanViewModel>(),
                       child: const CarePlanHomeScreen(),
                     ),
-                    const Center(child: Text('Perfil do Paciente')),
+                    ChangeNotifierProvider(
+                      create: (_) => sl<ProfileViewModel>(),
+                      child: const ProfileScreen(),
+                    ),
                   ];
 
             return IndexedStack(index: viewModel.currentIndex, children: pages);

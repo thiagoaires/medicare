@@ -3,6 +3,8 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+
 enum AuthStatus { initial, loading, success, error }
 
 class AuthViewModel extends ChangeNotifier {
@@ -21,18 +23,25 @@ class AuthViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> login(String email, String password) async {
+    print('DEBUG: [AuthViewModel] Login called. Setting status to loading.');
     _status = AuthStatus.loading;
     notifyListeners();
 
+    print('DEBUG: [AuthViewModel] Invoking loginUseCase...');
     final result = await loginUseCase(email, password);
+    print('DEBUG: [AuthViewModel] loginUseCase returned.');
 
     result.fold(
       (failure) {
+        print(
+          'DEBUG: [AuthViewModel] Login failed with failure: ${failure.message}',
+        );
         _status = AuthStatus.error;
         _errorMessage = failure.message;
         notifyListeners();
       },
       (user) {
+        print('DEBUG: [AuthViewModel] Login success. User: ${user.name}');
         _status = AuthStatus.success;
         _user = user;
         notifyListeners();
@@ -68,5 +77,37 @@ class AuthViewModel extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  Future<bool> checkAuthStatus() async {
+    _status = AuthStatus.loading;
+    notifyListeners();
+
+    try {
+      final user = await ParseUser.currentUser() as ParseUser?;
+
+      if (user != null && user.sessionToken != null) {
+        final response = await user.getUpdatedUser();
+        if (response.success && response.result != null) {
+          final updatedUser = response.result as ParseUser;
+          _user = UserEntity(
+            id: updatedUser.objectId!,
+            name: updatedUser.get<String>('name') ?? '',
+            email: updatedUser.emailAddress ?? '',
+            type: updatedUser.get<String>('userType') ?? 'paciente',
+          );
+          _status = AuthStatus.success;
+          notifyListeners();
+          return true;
+        }
+      }
+    } catch (e) {
+      // Error checking auth
+    }
+
+    _status = AuthStatus.initial;
+    _user = null;
+    notifyListeners();
+    return false;
   }
 }
