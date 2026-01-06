@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart'; // Required for FilteringTextInputFormatter
 import '../view_model/profile_view_model.dart';
+import '../../../core/utils/phone_input_formatter.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -38,8 +40,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (_nameController.text != viewModel.profile!.name) {
         _nameController.text = viewModel.profile!.name;
       }
-      if (_phoneController.text != (viewModel.profile!.phone ?? '')) {
-        _phoneController.text = viewModel.profile!.phone ?? '';
+      if (_phoneController.text.replaceAll(RegExp(r'[^0-9]'), '') !=
+          (viewModel.profile!.phone ?? '')) {
+        _phoneController.text = PhoneInputFormatter.format(
+          viewModel.profile!.phone ?? '',
+        );
       }
     }
   }
@@ -127,6 +132,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextFormField(
                   controller: _phoneController,
                   readOnly: !viewModel.isEditing,
+                  keyboardType: TextInputType.number, // Input numérico
+                  inputFormatters: [
+                    FilteringTextInputFormatter
+                        .digitsOnly, // Garante que só entra número antes do custom
+                    PhoneInputFormatter(), // Aplica a máscara
+                  ],
                   decoration: InputDecoration(
                     labelText: 'Telefone',
                     border: viewModel.isEditing

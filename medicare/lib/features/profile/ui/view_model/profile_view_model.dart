@@ -56,6 +56,9 @@ class ProfileViewModel extends ChangeNotifier {
   Future<void> saveProfile(String name, String phone) async {
     if (_profile == null) return;
 
+    // Clean phone number (formatting)
+    final cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
+
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -67,7 +70,7 @@ class ProfileViewModel extends ChangeNotifier {
       email: _profile!.email,
       userType: _profile!.userType,
       crm: _profile!.crm,
-      phone: phone,
+      phone: cleanPhone,
     );
 
     final result = await updateProfileUseCase(updatedProfile);
