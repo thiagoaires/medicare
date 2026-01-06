@@ -88,7 +88,10 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CreateCarePlanScreen(),
+                    builder: (_) => ChangeNotifierProvider.value(
+                      value: context.read<CarePlanViewModel>(),
+                      child: const CreateCarePlanScreen(),
+                    ),
                   ),
                 );
 

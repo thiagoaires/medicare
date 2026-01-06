@@ -13,7 +13,7 @@ class ParseCheckInDataSourceImpl implements CheckInRemoteDataSource {
     final checkIn = ParseObject('CheckIn');
     checkIn.set('planId', planId);
     checkIn.set('date', DateTime.now());
-    checkIn.set('status', 'concluido');
+    checkIn.set<bool>('status', true);
     if (notes != null) {
       checkIn.set('notes', notes);
     }

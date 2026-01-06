@@ -4,7 +4,7 @@ class CheckInEntity extends Equatable {
   final String id;
   final String planId;
   final DateTime date;
-  final String status;
+  final bool status;
   final String? notes;
 
   const CheckInEntity({

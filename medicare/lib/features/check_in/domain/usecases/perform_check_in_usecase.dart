@@ -14,10 +14,17 @@ class PerformCheckInUseCase {
 
     return historyResult.fold((failure) => Left(failure), (history) async {
       final today = DateTime.now();
+
+      bool isSameDay(DateTime a, DateTime b) {
+        final localA = a.toLocal();
+        final localB = b.toLocal();
+        return localA.year == localB.year &&
+            localA.month == localB.month &&
+            localA.day == localB.day;
+      }
+
       final hasCheckInToday = history.any((checkIn) {
-        return checkIn.date.year == today.year &&
-            checkIn.date.month == today.month &&
-            checkIn.date.day == today.day;
+        return isSameDay(checkIn.date, today);
       });
 
       if (hasCheckInToday) {

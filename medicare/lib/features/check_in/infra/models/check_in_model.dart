@@ -15,7 +15,7 @@ class CheckInModel extends CheckInEntity {
       id: parseObject.objectId!,
       planId: parseObject.get<String>('planId') ?? '',
       date: parseObject.get<DateTime>('date') ?? DateTime.now(),
-      status: parseObject.get<String>('status') ?? 'unknown',
+      status: parseObject.get<bool>('status') ?? false,
       notes: parseObject.get<String>('notes'),
     );
   }

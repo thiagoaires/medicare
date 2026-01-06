@@ -41,11 +41,19 @@ class CheckInViewModel extends ChangeNotifier {
         _history = fetchedHistory;
 
         // Verificar se tem check-in hoje
+        // Verificar se tem check-in hoje
         final today = DateTime.now();
+
+        bool isSameDay(DateTime a, DateTime b) {
+          final localA = a.toLocal();
+          final localB = b.toLocal();
+          return localA.year == localB.year &&
+              localA.month == localB.month &&
+              localA.day == localB.day;
+        }
+
         _isCheckedInToday = fetchedHistory.any((checkIn) {
-          return checkIn.date.year == today.year &&
-              checkIn.date.month == today.month &&
-              checkIn.date.day == today.day;
+          return isSameDay(checkIn.date, today);
         });
 
         _isLoading = false;
