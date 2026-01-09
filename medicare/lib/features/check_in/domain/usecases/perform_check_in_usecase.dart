@@ -1,6 +1,6 @@
+import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import '../../../core/errors/failures.dart';
-import '../entities/check_in_entity.dart';
 import '../repositories/check_in_repository.dart';
 
 class PerformCheckInUseCase {
@@ -8,7 +8,12 @@ class PerformCheckInUseCase {
 
   PerformCheckInUseCase(this.repository);
 
-  Future<Either<Failure, Unit>> call(String planId, String? notes) async {
+  Future<Either<Failure, Unit>> call(
+    String planId,
+    String? notes, {
+    int? feeling,
+    File? photo,
+  }) async {
     // Validação de Negócio: Verificar se já existe check-in HOJE
     final historyResult = await repository.getCheckInsForPlan(planId);
 
@@ -32,7 +37,7 @@ class PerformCheckInUseCase {
         return const Right(unit);
       }
 
-      return await repository.createCheckIn(planId, notes);
+      return await repository.createCheckIn(planId, notes, feeling, photo);
     });
   }
 }

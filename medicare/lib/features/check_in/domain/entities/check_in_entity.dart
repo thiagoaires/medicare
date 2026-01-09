@@ -6,6 +6,9 @@ class CheckInEntity extends Equatable {
   final DateTime date;
   final bool status;
   final String? notes;
+  final int? feeling;
+  final String? photoUrl;
+  final String? photoPath;
 
   const CheckInEntity({
     required this.id,
@@ -13,6 +16,9 @@ class CheckInEntity extends Equatable {
     required this.date,
     required this.status,
     this.notes,
+    this.feeling,
+    this.photoUrl,
+    this.photoPath,
   });
 
   @override

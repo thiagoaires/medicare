@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_model/check_in_view_model.dart';
-import '../../../../injection_container.dart';
+import 'check_in_dialog.dart';
 
 class DailyCheckInButton extends StatefulWidget {
   final String planId;
@@ -85,16 +85,13 @@ class _DailyCheckInButtonState extends State<DailyCheckInButton> {
           child: InkWell(
             onTap: viewModel.isLoading
                 ? null
-                : () async {
-                    final success = await viewModel.doCheckIn(widget.planId);
-                    if (success && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Parabéns! Tarefa concluída.'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    }
+                : () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) =>
+                          CheckInDialog(planId: widget.planId),
+                    );
                   },
             child: Padding(
               padding: const EdgeInsets.symmetric(

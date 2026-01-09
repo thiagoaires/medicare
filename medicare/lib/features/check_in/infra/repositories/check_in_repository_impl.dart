@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import '../../../core/errors/exceptions.dart';
 import '../../../core/errors/failures.dart';
@@ -14,9 +15,11 @@ class CheckInRepositoryImpl implements CheckInRepository {
   Future<Either<Failure, Unit>> createCheckIn(
     String planId,
     String? notes,
+    int? feeling,
+    File? photo,
   ) async {
     try {
-      await remoteDataSource.create(planId, notes);
+      await remoteDataSource.create(planId, notes, feeling, photo);
       return const Right(unit);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
