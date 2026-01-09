@@ -14,30 +14,41 @@ class PerformCheckInUseCase {
     int? feeling,
     File? photo,
   }) async {
+    print('DEBUG: PerformCheckInUseCase called');
     // Validação de Negócio: Verificar se já existe check-in HOJE
     final historyResult = await repository.getCheckInsForPlan(planId);
 
-    return historyResult.fold((failure) => Left(failure), (history) async {
-      final today = DateTime.now();
+    return historyResult.fold(
+      (failure) {
+        print(
+          'DEBUG: PerformCheckInUseCase failed to get history: ${failure.message}',
+        );
+        return Left(failure);
+      },
+      (history) async {
+        final today = DateTime.now();
 
-      bool isSameDay(DateTime a, DateTime b) {
-        final localA = a.toLocal();
-        final localB = b.toLocal();
-        return localA.year == localB.year &&
-            localA.month == localB.month &&
-            localA.day == localB.day;
-      }
+        bool isSameDay(DateTime a, DateTime b) {
+          final localA = a.toLocal();
+          final localB = b.toLocal();
+          return localA.year == localB.year &&
+              localA.month == localB.month &&
+              localA.day == localB.day;
+        }
 
-      final hasCheckInToday = history.any((checkIn) {
-        return isSameDay(checkIn.date, today);
-      });
+        final hasCheckInToday = history.any((checkIn) {
+          return isSameDay(checkIn.date, today);
+        });
 
-      if (hasCheckInToday) {
-        // Já fez check-in hoje
-        return const Right(unit);
-      }
+        if (hasCheckInToday) {
+          print('DEBUG: PerformCheckInUseCase: Already checked in today');
+          // Já fez check-in hoje
+          return const Right(unit);
+        }
 
-      return await repository.createCheckIn(planId, notes, feeling, photo);
-    });
+        print('DEBUG: PerformCheckInUseCase calling repository.createCheckIn');
+        return await repository.createCheckIn(planId, notes, feeling, photo);
+      },
+    );
   }
 }

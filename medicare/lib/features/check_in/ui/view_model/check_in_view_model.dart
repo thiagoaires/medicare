@@ -117,6 +117,9 @@ class CheckInViewModel extends ChangeNotifier {
     int? feeling,
     File? photo,
   }) async {
+    print(
+      'DEBUG: CheckInViewModel.doCheckIn called with planId: $planId, feeling: $feeling',
+    );
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -130,12 +133,14 @@ class CheckInViewModel extends ChangeNotifier {
 
     return result.fold(
       (failure) {
+        print('DEBUG: CheckInViewModel.doCheckIn failed: ${failure.message}');
         _errorMessage = failure.message;
         _isLoading = false;
         notifyListeners();
         return false;
       },
       (_) {
+        print('DEBUG: CheckInViewModel.doCheckIn success');
         // Sucesso
         _isCheckedInToday = true;
         _isLoading = false;

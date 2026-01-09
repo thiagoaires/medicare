@@ -7,6 +7,9 @@ import 'care_plan_form_screen.dart';
 import '../../../check_in/ui/widgets/daily_check_in_button.dart';
 import '../../../check_in/ui/view_model/check_in_view_model.dart';
 import '../../../../injection_container.dart';
+import '../../../home/ui/widgets/patient_detail_screen.dart';
+import '../../../home/ui/view_model/patient_detail_view_model.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 
 class CarePlanHomeScreen extends StatefulWidget {
   const CarePlanHomeScreen({super.key});
@@ -132,13 +135,44 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (isDoctor)
+                                if (isDoctor) ...[
                                   IconButton(
                                     icon: const Icon(Icons.edit, size: 24),
                                     onPressed: () =>
                                         _navigateToForm(plan: plan),
                                     padding: EdgeInsets.zero,
                                   ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.assignment_ind,
+                                      size: 24,
+                                    ),
+                                    tooltip: 'Ver Evolução',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ChangeNotifierProvider(
+                                            create: (_) =>
+                                                sl<PatientDetailViewModel>(),
+                                            child: PatientDetailScreen(
+                                              patient: UserEntity(
+                                                id: plan.patientId,
+                                                name:
+                                                    plan.patientName ??
+                                                    'Paciente',
+                                                email:
+                                                    '', // Not needed for display
+                                                type: 'paciente',
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
                                 IconButton(
                                   icon: const Icon(Icons.chat, size: 24),
                                   onPressed: () {

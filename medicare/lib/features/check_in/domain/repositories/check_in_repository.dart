@@ -13,4 +13,7 @@ abstract class CheckInRepository {
   Future<Either<Failure, List<CheckInEntity>>> getCheckInsForPlan(
     String planId,
   );
+  Future<Either<Failure, List<CheckInEntity>>> getCheckInsByPatient(
+    String patientId,
+  );
 }

@@ -160,7 +160,17 @@ class _CheckInDialogState extends State<CheckInDialog> {
                 ),
                 maxLines: 2,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
+              if (viewModel.errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(
+                    viewModel.errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              const SizedBox(height: 8),
               if (viewModel.isLoading)
                 const Center(child: CircularProgressIndicator())
               else
