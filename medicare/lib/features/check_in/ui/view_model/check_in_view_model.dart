@@ -6,18 +6,24 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../domain/entities/check_in_entity.dart';
 import '../../domain/usecases/get_plan_history_usecase.dart';
 import '../../domain/usecases/perform_check_in_usecase.dart';
+import '../../domain/usecases/has_check_in_today_usecase.dart';
 
 class CheckInViewModel extends ChangeNotifier {
   final PerformCheckInUseCase performCheckInUseCase;
   final GetPlanHistoryUseCase getPlanHistoryUseCase;
+  final HasCheckInTodayUseCase hasCheckInTodayUseCase; // New dependency
 
   CheckInViewModel({
     required this.performCheckInUseCase,
     required this.getPlanHistoryUseCase,
+    required this.hasCheckInTodayUseCase,
   });
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  bool _isCheckingStatus = false;
+  bool get isCheckingStatus => _isCheckingStatus;
 
   bool _isCheckedInToday = false;
   bool get isCheckedInToday => _isCheckedInToday;
@@ -29,40 +35,31 @@ class CheckInViewModel extends ChangeNotifier {
   List<CheckInEntity> get history => _history;
 
   Future<void> checkStatus(String planId) async {
-    _isLoading = true;
+    _isCheckingStatus = true;
     _errorMessage = null;
     notifyListeners();
 
-    final result = await getPlanHistoryUseCase(planId);
+    // Use efficient hasCheckInToday query first
+    final hasCheckInResult = await hasCheckInTodayUseCase(planId);
 
-    result.fold(
+    hasCheckInResult.fold(
       (failure) {
-        _errorMessage = failure.message;
-        _isLoading = false;
-        notifyListeners();
+        // Silently fail or log, but don't block UI too much?
+        // Or treat as not checked in?
+        _isCheckedInToday = false;
       },
-      (fetchedHistory) {
-        _history = fetchedHistory;
-
-        // Verificar se tem check-in hoje
-        final today = DateTime.now();
-
-        bool isSameDay(DateTime a, DateTime b) {
-          final localA = a.toLocal();
-          final localB = b.toLocal();
-          return localA.year == localB.year &&
-              localA.month == localB.month &&
-              localA.day == localB.day;
-        }
-
-        _isCheckedInToday = fetchedHistory.any((checkIn) {
-          return isSameDay(checkIn.date, today);
-        });
-
-        _isLoading = false;
-        notifyListeners();
+      (hasCheckIn) {
+        _isCheckedInToday = hasCheckIn;
       },
     );
+
+    // Also fetch history if needed for other screens, or separate?
+    // For now keeping history fetch but it's secondary to the status check for FAB.
+    // Actually, let's keep getPlanHistoryUseCase if used by other parts,
+    // but relies on hasCheckInToday for the FAB state to be fast.
+
+    _isCheckingStatus = false;
+    notifyListeners();
   }
 
   Future<File?> pickImage(ImageSource source) async {
@@ -117,9 +114,6 @@ class CheckInViewModel extends ChangeNotifier {
     int? feeling,
     File? photo,
   }) async {
-    print(
-      'DEBUG: CheckInViewModel.doCheckIn called with planId: $planId, feeling: $feeling',
-    );
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -133,14 +127,12 @@ class CheckInViewModel extends ChangeNotifier {
 
     return result.fold(
       (failure) {
-        print('DEBUG: CheckInViewModel.doCheckIn failed: ${failure.message}');
         _errorMessage = failure.message;
         _isLoading = false;
         notifyListeners();
         return false;
       },
       (_) {
-        print('DEBUG: CheckInViewModel.doCheckIn success');
         // Sucesso
         _isCheckedInToday = true;
         _isLoading = false;

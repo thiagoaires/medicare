@@ -31,6 +31,7 @@ import 'features/check_in/infra/datasources/check_in_remote_datasource.dart';
 import 'features/check_in/infra/repositories/check_in_repository_impl.dart';
 import 'features/check_in/ui/view_model/check_in_view_model.dart';
 import 'features/check_in/domain/usecases/get_patient_check_ins_usecase.dart';
+import 'features/check_in/domain/usecases/has_check_in_today_usecase.dart';
 import 'features/home/ui/view_model/patient_detail_view_model.dart';
 import 'features/home/domain/usecases/get_doctor_stats_usecase.dart';
 
@@ -146,6 +147,7 @@ Future<void> init() async {
     () => CheckInViewModel(
       performCheckInUseCase: sl(),
       getPlanHistoryUseCase: sl(),
+      hasCheckInTodayUseCase: sl(),
     ),
   );
   sl.registerFactory(
@@ -156,6 +158,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => PerformCheckInUseCase(sl()));
   sl.registerLazySingleton(() => GetPlanHistoryUseCase(sl()));
   sl.registerLazySingleton(() => GetPatientCheckInsUseCase(sl()));
+  sl.registerLazySingleton(() => HasCheckInTodayUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<CheckInRepository>(

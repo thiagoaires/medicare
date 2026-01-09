@@ -19,6 +19,44 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
   final List<Widget> _pages = const [CarePlanHomeScreen(), ProfileScreen()];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Listen to CarePlanViewModel to know when plans are loaded
+      final carePlanViewModel = context.read<CarePlanViewModel>();
+      carePlanViewModel.addListener(_onCarePlansChanged);
+      // Check immediately if already loaded
+      if (carePlanViewModel.plans.isNotEmpty) {
+        _checkStatus(carePlanViewModel.plans.first.id);
+      }
+    });
+  }
+
+  void _onCarePlansChanged() {
+    final carePlanViewModel = context.read<CarePlanViewModel>();
+    if (carePlanViewModel.plans.isNotEmpty) {
+      _checkStatus(carePlanViewModel.plans.first.id);
+      // Remove listener if we only want to check once?
+      // Or keep it if plans can change?
+      // For now, let's remove to avoid spamming IF the plan doesn't change often.
+      // But if user has 0 plans then gets 1, we need it.
+      carePlanViewModel.removeListener(_onCarePlansChanged);
+    }
+  }
+
+  void _checkStatus(String planId) {
+    context.read<CheckInViewModel>().checkStatus(planId);
+  }
+
+  @override
+  void dispose() {
+    // Cannot easily remove listener here as we need reference to the exact viewmodel instance
+    // But since it's a singleton/factory in provider, accessing via context in dispose might be unsafe.
+    // However, since we remove it in the callback, it should be fine.
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -48,24 +86,65 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
     if (_currentIndex != 0) return null;
 
     return Consumer<CarePlanViewModel>(
-      builder: (context, viewModel, child) {
-        if (viewModel.plans.isEmpty) {
+      builder: (context, carePlanViewModel, child) {
+        if (carePlanViewModel.plans.isEmpty) {
           return const SizedBox.shrink();
         }
 
-        return FloatingActionButton.extended(
-          onPressed: () {
-            final checkInViewModel = context.read<CheckInViewModel>();
-            showDialog(
-              context: context,
-              builder: (context) => ChangeNotifierProvider.value(
-                value: checkInViewModel,
-                child: CheckInDialog(planId: viewModel.plans.first.id),
-              ),
+        // Trigger status check if not already checking
+        final plan = carePlanViewModel.plans.first;
+        // Ideally we should do this in initState or similar, but doing here for simplicity
+        // ensuring we don't spam.
+        // A better approach is listening to CarePlanViewModel changes or using a PostFrameCallback
+        // For now, let's use the Consumer of CheckInViewModel to drive the UI.
+
+        // Trigger check status once if needed?
+        // We will do it in initState or postFrameCallback logic below the build method or let the user handle it.
+        // User request: "Ensure the call to checkStatus(planId) happens after CarePlanViewModel has successfully loaded the plans."
+
+        return Consumer<CheckInViewModel>(
+          builder: (context, checkInViewModel, child) {
+            if (checkInViewModel.isCheckingStatus) {
+              return FloatingActionButton(
+                onPressed: null,
+                backgroundColor: Colors.grey[300],
+                child: const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              );
+            }
+
+            if (checkInViewModel.isCheckedInToday) {
+              return FloatingActionButton.extended(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Você já completou seu diário hoje!'),
+                    ),
+                  );
+                },
+                backgroundColor: Colors.grey,
+                label: const Text('Diário Completo'),
+                icon: const Icon(Icons.check),
+              );
+            }
+
+            return FloatingActionButton.extended(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => ChangeNotifierProvider.value(
+                    value: checkInViewModel,
+                    child: CheckInDialog(planId: plan.id),
+                  ),
+                );
+              },
+              label: const Text('Check-in Diário'),
+              icon: const Icon(Icons.assignment_turned_in),
             );
           },
-          label: const Text('Check-in Diário'),
-          icon: const Icon(Icons.assignment_turned_in),
         );
       },
     );

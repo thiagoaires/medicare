@@ -23,18 +23,12 @@ class CheckInRepositoryImpl implements CheckInRepository {
     int? feeling,
     File? photo,
   ) async {
-    print('DEBUG: CheckInRepositoryImpl.createCheckIn called');
     try {
       await remoteDataSource.create(planId, notes, feeling, photo);
-      print('DEBUG: CheckInRepositoryImpl.createCheckIn success');
       return const Right(unit);
     } on ServerException catch (e) {
-      print(
-        'DEBUG: CheckInRepositoryImpl.createCheckIn ServerException: ${e.message}',
-      );
       return Left(ServerFailure(e.message));
     } catch (e) {
-      print('DEBUG: CheckInRepositoryImpl.createCheckIn unknown error: $e');
       return Left(ServerFailure('Erro desconhecido: $e'));
     }
   }
@@ -73,6 +67,16 @@ class CheckInRepositoryImpl implements CheckInRepository {
         final models = await remoteDataSource.getByPlanIds(planIds);
         return Right(models);
       });
+    } on ServerException catch (e) {
+      return Left(ServerFailure('Erro desconhecido: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> hasCheckInToday(String planId) async {
+    try {
+      final result = await remoteDataSource.hasCheckInToday(planId);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (e) {

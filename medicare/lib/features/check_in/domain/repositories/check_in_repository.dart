@@ -16,4 +16,5 @@ abstract class CheckInRepository {
   Future<Either<Failure, List<CheckInEntity>>> getCheckInsByPatient(
     String patientId,
   );
+  Future<Either<Failure, bool>> hasCheckInToday(String planId);
 }

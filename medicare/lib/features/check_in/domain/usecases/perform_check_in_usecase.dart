@@ -14,15 +14,11 @@ class PerformCheckInUseCase {
     int? feeling,
     File? photo,
   }) async {
-    print('DEBUG: PerformCheckInUseCase called');
     // Validação de Negócio: Verificar se já existe check-in HOJE
     final historyResult = await repository.getCheckInsForPlan(planId);
 
     return historyResult.fold(
       (failure) {
-        print(
-          'DEBUG: PerformCheckInUseCase failed to get history: ${failure.message}',
-        );
         return Left(failure);
       },
       (history) async {
@@ -41,12 +37,11 @@ class PerformCheckInUseCase {
         });
 
         if (hasCheckInToday) {
-          print('DEBUG: PerformCheckInUseCase: Already checked in today');
-          // Já fez check-in hoje
-          return const Right(unit);
+          return const Left(
+            InvalidDataFailure('Você já realizou o check-in hoje.'),
+          );
         }
 
-        print('DEBUG: PerformCheckInUseCase calling repository.createCheckIn');
         return await repository.createCheckIn(planId, notes, feeling, photo);
       },
     );
