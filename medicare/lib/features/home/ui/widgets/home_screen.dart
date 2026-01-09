@@ -22,21 +22,26 @@ class HomeScreen extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => sl<ProfileViewModel>()),
       ],
       child: Scaffold(
-        body: Consumer<HomeViewModel>(
-          builder: (context, viewModel, _) {
-            final isDoctor = userType == 'medico';
+        body: SafeArea(
+          child: Consumer<HomeViewModel>(
+            builder: (context, viewModel, _) {
+              final isDoctor = userType == 'medico';
 
-            // Define tabs based on user type
-            final List<Widget> pages = isDoctor
-                ? [
-                    const DoctorDashboardWidget(),
-                    const CarePlanHomeScreen(),
-                    const ProfileScreen(),
-                  ]
-                : [const CarePlanHomeScreen(), const ProfileScreen()];
+              // Define tabs based on user type
+              final List<Widget> pages = isDoctor
+                  ? [
+                      const DoctorDashboardWidget(),
+                      const CarePlanHomeScreen(),
+                      const ProfileScreen(),
+                    ]
+                  : [const CarePlanHomeScreen(), const ProfileScreen()];
 
-            return IndexedStack(index: viewModel.currentIndex, children: pages);
-          },
+              return IndexedStack(
+                index: viewModel.currentIndex,
+                children: pages,
+              );
+            },
+          ),
         ),
         bottomNavigationBar: Consumer<HomeViewModel>(
           builder: (context, viewModel, _) {

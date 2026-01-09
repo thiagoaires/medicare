@@ -60,12 +60,18 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
 
       // Smart Fetching: Get Patient Names
       final patientIds = models.map((e) => e.patientId.trim()).toSet().toList();
+      print('DEBUG: CarePlanRepository - Found Patient IDs: $patientIds');
+
       final usersData = await dataSource.getUsersByIds(patientIds);
+      print(
+        'DEBUG: CarePlanRepository - Fetched Users Data for ${usersData.length} users',
+      );
 
       final namesMap = {
         for (var user in usersData)
           (user['id'] as String).trim(): user['name'] as String,
       };
+      print('DEBUG: CarePlanRepository - Names Map: $namesMap');
 
       final entities = models.map((model) {
         return CarePlanEntity(

@@ -46,7 +46,18 @@ class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
     var response = await user.signUp();
 
     if (response.success) {
-      return UserModel.fromParse(response.result as ParseUser);
+      // Define permissões de segurança APÓS o login/criação
+      final currentUser = response.result as ParseUser;
+      final acl = ParseACL(owner: currentUser);
+      acl.setPublicReadAccess(
+        allowed: true,
+      ); // Todo mundo pode ler (Nome, Email)
+      acl.setPublicWriteAccess(allowed: false); // Só o dono pode editar
+      currentUser.setACL(acl);
+
+      await currentUser.save();
+
+      return UserModel.fromParse(currentUser);
     } else {
       throw ServerException(
         message: response.error?.message ?? 'Erro ao cadastrar',

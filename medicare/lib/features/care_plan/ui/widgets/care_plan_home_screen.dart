@@ -97,30 +97,71 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                         horizontal: 16.0,
                         vertical: 8.0,
                       ),
-                      child: ListTile(
-                        title: Text(plan.title),
-                        subtitle: Column(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(plan.description),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Paciente: ${plan.patientName ?? plan.patientId}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    plan.title,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(plan.description),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    isDoctor
+                                        ? 'Paciente: ${plan.patientName ?? plan.patientId}'
+                                        : 'Médico: ${plan.doctorName ?? "Não informado"}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(plan.startDate.toString().split(' ')[0]),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(plan.startDate.toString().split(' ')[0]),
-                            if (isDoctor)
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () => _navigateToForm(plan: plan),
-                              ),
+                            const SizedBox(width: 8),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isDoctor)
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, size: 24),
+                                    onPressed: () =>
+                                        _navigateToForm(plan: plan),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                IconButton(
+                                  icon: const Icon(Icons.chat, size: 24),
+                                  onPressed: () {
+                                    debugPrint(
+                                      'Other user ID: ${isDoctor ? plan.patientId : plan.doctorId}',
+                                    );
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/chat',
+                                      arguments: {
+                                        'otherUserId': isDoctor
+                                            ? plan.patientId
+                                            : plan.doctorId,
+                                        'otherUserName': isDoctor
+                                            ? (plan.patientName ?? 'Paciente')
+                                            : (plan.doctorName ?? 'Médico'),
+                                      },
+                                    );
+                                  },
+                                  padding: EdgeInsets.zero,
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),

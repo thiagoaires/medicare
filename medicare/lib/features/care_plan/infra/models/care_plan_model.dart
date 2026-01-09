@@ -9,16 +9,23 @@ class CarePlanModel extends CarePlanEntity {
     required super.doctorId,
     required super.patientId,
     required super.startDate,
+    super.doctorName,
   });
 
   factory CarePlanModel.fromParse(ParseObject object) {
     // Handling doctor pointer or id
     String doctorId = '';
+    String doctorName = '';
     if (object.get('doctor') != null) {
       // If included, we might get the object, otherwise just the ptr
       var doc = object.get<ParseObject>('doctor');
       if (doc != null) {
         doctorId = doc.objectId ?? '';
+        doctorName = () {
+          final fullName = doc.get<String>('fullName');
+          if (fullName != null && fullName.isNotEmpty) return fullName;
+          return doc.get<String>('username') ?? 'Sem Nome';
+        }();
       }
     }
 
@@ -29,6 +36,7 @@ class CarePlanModel extends CarePlanEntity {
       doctorId: doctorId,
       patientId: object.get<String>('patientId') ?? '',
       startDate: object.get<DateTime>('startDate') ?? DateTime.now(),
+      doctorName: doctorName.isNotEmpty ? doctorName : null,
     );
   }
 

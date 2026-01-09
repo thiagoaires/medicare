@@ -55,6 +55,11 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
                       value: '$totalPlans',
                       icon: Icons.assignment,
                       color: Colors.blueAccent,
+                      onTap: () {
+                        context.read<HomeViewModel>().setIndex(
+                          1,
+                        ); // Navigate to Care Plans
+                      },
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -89,12 +94,14 @@ class _DashboardCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   const _DashboardCard({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -102,19 +109,26 @@ class _DashboardCard extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Icon(icon, size: 40, color: color),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(title, style: TextStyle(color: Colors.grey[600])),
-          ],
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Icon(icon, size: 40, color: color),
+              const SizedBox(height: 12),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(title, style: TextStyle(color: Colors.grey[600])),
+            ],
+          ),
         ),
       ),
     );

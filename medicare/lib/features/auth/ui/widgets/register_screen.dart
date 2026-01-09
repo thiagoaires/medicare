@@ -16,6 +16,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _selectedType = 'paciente';
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthViewModel>().resetState();
+    });
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -23,18 +31,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _onRegister() {
+  Future<void> _onRegister() async {
     final name = _nameController.text;
     final email = _emailController.text;
     final password = _passwordController.text;
 
     if (name.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
-      context.read<AuthViewModel>().register(
+      final authViewModel = context.read<AuthViewModel>();
+      await authViewModel.register(
         name: name,
         email: email,
         password: password,
         type: _selectedType,
       );
+
+      if (!mounted) return;
+
+      if (authViewModel.status == AuthStatus.success &&
+          authViewModel.user != null) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) => false,
+          arguments: {
+            'userType': authViewModel.user!.type,
+            'userId': authViewModel.user!.id,
+          },
+        );
+      }
     } else {
       ScaffoldMessenger.of(
         context,

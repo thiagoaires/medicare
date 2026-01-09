@@ -8,6 +8,7 @@ class CarePlanEntity extends Equatable {
   final String patientId;
   final DateTime startDate;
   final String? patientName;
+  final String? doctorName;
 
   const CarePlanEntity({
     required this.id,
@@ -17,6 +18,7 @@ class CarePlanEntity extends Equatable {
     required this.patientId,
     required this.startDate,
     this.patientName,
+    this.doctorName,
   });
 
   @override
@@ -28,5 +30,6 @@ class CarePlanEntity extends Equatable {
     patientId,
     startDate,
     patientName,
+    doctorName,
   ];
 }

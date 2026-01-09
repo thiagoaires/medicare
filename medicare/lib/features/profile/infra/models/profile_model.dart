@@ -14,8 +14,11 @@ class ProfileModel extends ProfileEntity {
   factory ProfileModel.fromParse(ParseUser user) {
     return ProfileModel(
       id: user.objectId!,
-      name: user.get<String>('name') ?? '',
-      email: user.emailAddress ?? '',
+      name:
+          user.get<String>('fullName') ??
+          user.get<String>('username') ??
+          'Sem Nome',
+      email: user.emailAddress ?? user.username ?? '',
       userType: user.get<String>('userType') ?? '',
       crm: user.get<String>('crm'),
       phone: user.get<String>('phone'),

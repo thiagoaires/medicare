@@ -32,6 +32,13 @@ import 'features/check_in/infra/repositories/check_in_repository_impl.dart';
 import 'features/check_in/ui/view_model/check_in_view_model.dart';
 import 'features/home/domain/usecases/get_doctor_stats_usecase.dart';
 
+import 'features/chat/domain/repositories/chat_repository.dart';
+import 'features/chat/domain/usecases/get_messages_usecase.dart';
+import 'features/chat/domain/usecases/send_message_usecase.dart';
+import 'features/chat/infra/datasources/chat_remote_datasource.dart';
+import 'features/chat/infra/repositories/chat_repository_impl.dart';
+import 'features/chat/ui/view_model/chat_view_model.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -152,5 +159,25 @@ Future<void> init() async {
   // DataSource
   sl.registerLazySingleton<CheckInRemoteDataSource>(
     () => ParseCheckInDataSourceImpl(),
+  );
+
+  //! Features - Chat
+  // ViewModel
+  sl.registerFactory(
+    () => ChatViewModel(sendMessageUseCase: sl(), getMessagesUseCase: sl()),
+  );
+
+  // UseCases
+  sl.registerLazySingleton(() => SendMessageUseCase(sl()));
+  sl.registerLazySingleton(() => GetMessagesUseCase(sl()));
+
+  // Repository
+  sl.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // DataSource
+  sl.registerLazySingleton<ChatRemoteDataSource>(
+    () => ChatRemoteDataSourceImpl(),
   );
 }

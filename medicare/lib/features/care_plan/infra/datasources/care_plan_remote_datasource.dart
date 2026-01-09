@@ -69,8 +69,8 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
       query.whereEqualTo('doctor', doctorPointer.toPointer());
     }
 
-    // Include doctor details if needed, but for now just the plan
-    // query.includeObject(['doctor']);
+    // Include doctor details if needed
+    query.includeObject(['doctor']);
 
     final response = await query.query();
 
@@ -111,18 +111,74 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> getUsersByIds(List<String> ids) async {
-    final query = QueryBuilder<ParseUser>(ParseUser.forQuery());
-    query.whereContainedIn('objectId', ids);
-    // Limit to likely max? 1000 default is Parse limit.
+    // Sub-query for Object IDs
+    final qId = QueryBuilder<ParseUser>(ParseUser.forQuery())
+      ..whereContainedIn('objectId', ids);
+
+    // Sub-query for Usernames (often emails in this app)
+    final qUsername = QueryBuilder<ParseUser>(ParseUser.forQuery())
+      ..whereContainedIn('username', ids);
+
+    // Sub-query for Emails
+    final qEmail = QueryBuilder<ParseUser>(ParseUser.forQuery())
+      ..whereContainedIn('email', ids);
+
+    // Combine queries
+    final query = QueryBuilder.or(ParseUser.forQuery(), [
+      qId,
+      qUsername,
+      qEmail,
+    ]);
+
     query.setLimit(1000);
 
     final response = await query.query();
-
+    print('DEBUG: Chegou resposta do servidor.');
+    print('DEBUG: Sucesso? ${response.success}');
+    print('DEBUG: Erro? ${response.error?.message}');
+    print(
+      'DEBUG: Quantidade de usuários encontrados: ${response.results?.length ?? 0}',
+    );
     if (response.success && response.results != null) {
+      if (response.results!.isNotEmpty) {
+        print(
+          'DEBUG USER JSON: ${(response.results!.first as ParseObject).toString()}',
+        );
+      }
       return (response.results as List<ParseObject>).map((e) {
         return {
-          'id': e.objectId,
-          'name': e.get<String>('fullName') ?? e.get<String>('username') ?? '',
+          'id': e.objectId, // Return actual ObjectId
+          'lookupKey': e.objectId,
+          // WAIT: If I search by 'email', the Repo expects the key `patientId` (which is the email) to match.
+          // The Repo maps namesMap[models.patientId].
+          // If model.patientId is 'john@email.com', but result.objectId is 'XyZ', result map will have key 'XyZ'.
+          // Repo lookup: namesMap['john@email.com'] -> Null.
+
+          // I need to return the 'matched' key. But I don't know which one matched easiest.
+          // Better approach: In Repository, if the ID doesn't match, search by details?
+          // No, datasource should return enough info.
+
+          // If I return the object, I can match it back in Repository?
+          // Or I check if 'username' IS in the `ids` list.
+          'name': () {
+            final fullName = e.get<String>('fullName');
+            if (fullName == null) {
+              print('AVISO: Campo fullName veio nulo para o ID ${e.objectId}');
+            }
+            if (fullName != null && fullName.isNotEmpty) return fullName;
+
+            final username = e.get<String>('username');
+            if (username != null && username.isNotEmpty) return username;
+
+            final email = e.get<String>('email');
+            if (email != null && email.contains('@')) {
+              return email.split('@')[0];
+            }
+
+            return 'Usuário Sem Nome';
+          }(),
+          'email': e.get<String>('email'),
+          'username': e.get<String>('username'),
         };
       }).toList();
     } else if (response.success && response.results == null) {

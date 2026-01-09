@@ -72,6 +72,12 @@ class AuthViewModel extends ChangeNotifier {
     );
   }
 
+  void resetState() {
+    _status = AuthStatus.initial;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   Future<bool> checkAuthStatus() async {
     _status = AuthStatus.loading;
     notifyListeners();
