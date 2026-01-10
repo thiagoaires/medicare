@@ -23,6 +23,8 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
       TextEditingController(); // Defines text shown in field
   String? _selectedPatientId; // Stores the actual ID
   late DateTime _selectedDate;
+  DateTime? _endDate;
+  bool _isLimitedTime = false;
 
   bool get _isEditing => widget.planToEdit != null;
 
@@ -36,8 +38,11 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
       _selectedPatientId = plan.patientId;
       _patientIdController.text = plan.patientName ?? plan.patientId;
       _selectedDate = plan.startDate;
+      _endDate = plan.endDate;
+      _isLimitedTime = plan.endDate != null;
     } else {
       _selectedDate = DateTime.now();
+      _isLimitedTime = false;
     }
   }
 
@@ -70,6 +75,7 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
             : '', // Backend handles ID on create
         patientId: _selectedPatientId!,
         startDate: _selectedDate,
+        endDate: _isLimitedTime ? _endDate : null,
         patientName:
             _patientIdController.text, // Use the name from the controller
       );
@@ -184,10 +190,56 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
                       if (picked != null && picked != _selectedDate) {
                         setState(() {
                           _selectedDate = picked;
+                          // If end date exists and is before new start date, reset it or keep valid
+                          if (_endDate != null &&
+                              _endDate!.isBefore(_selectedDate)) {
+                            _endDate = _selectedDate.add(
+                              const Duration(days: 1),
+                            );
+                          }
                         });
                       }
                     },
                   ),
+                  const SizedBox(height: 8),
+                  SwitchListTile(
+                    title: const Text('Tratamento por tempo limitado?'),
+                    subtitle: const Text(
+                      'Para antibióticos ou tratamentos pontuais',
+                    ),
+                    value: _isLimitedTime,
+                    onChanged: (val) {
+                      setState(() {
+                        _isLimitedTime = val;
+                        if (_isLimitedTime && _endDate == null) {
+                          _endDate = _selectedDate.add(const Duration(days: 7));
+                        }
+                      });
+                    },
+                  ),
+                  if (_isLimitedTime)
+                    ListTile(
+                      title: Text(
+                        'Data de Término: ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
+                      ),
+                      trailing: const Icon(
+                        Icons.event_busy,
+                        color: Colors.redAccent,
+                      ),
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _endDate ?? _selectedDate,
+                          firstDate: _selectedDate, // Can't end before start
+                          lastDate: DateTime(2101),
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            _endDate = picked;
+                          });
+                        }
+                      },
+                    ),
                   const SizedBox(height: 24),
                   if (viewModel.isLoading)
                     const Center(child: CircularProgressIndicator())

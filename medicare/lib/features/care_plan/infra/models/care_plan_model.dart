@@ -11,6 +11,7 @@ class CarePlanModel extends CarePlanEntity {
     required super.startDate,
     super.doctorName,
     super.frequency,
+    super.endDate,
   });
 
   factory CarePlanModel.fromParse(ParseObject object) {
@@ -39,6 +40,7 @@ class CarePlanModel extends CarePlanEntity {
       startDate: object.get<DateTime>('startDate') ?? DateTime.now(),
       doctorName: doctorName.isNotEmpty ? doctorName : null,
       frequency: object.get<int>('frequency'),
+      endDate: object.get<DateTime>('endDate'),
     );
   }
 
@@ -53,6 +55,11 @@ class CarePlanModel extends CarePlanEntity {
     parseObject.set('startDate', startDate);
     if (frequency != null) {
       parseObject.set('frequency', frequency!);
+    }
+    if (endDate != null) {
+      parseObject.set('endDate', endDate!);
+    } else {
+      parseObject.unset('endDate'); // Explicitly unset if null (continuous)
     }
     // Note: 'doctor' pointer is better handled in the DataSource where we have access to context/currentUser
     // or we can expect it to be passed.

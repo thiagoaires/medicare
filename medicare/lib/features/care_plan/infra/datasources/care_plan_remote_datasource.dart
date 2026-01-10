@@ -100,10 +100,22 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
 
   @override
   Future<List<CarePlanModel>> get({String? patientId, String? doctorId}) async {
-    final query = QueryBuilder<ParseObject>(ParseObject('CarePlan'));
+    QueryBuilder<ParseObject> query;
 
     if (patientId != null) {
-      query.whereEqualTo('patientId', patientId); // String comparison
+      // Query 1: Check String column 'patientId'
+      final qString = QueryBuilder<ParseObject>(ParseObject('CarePlan'))
+        ..whereEqualTo('patientId', patientId);
+
+      // Query 2: Check Pointer column 'patient'
+      final patientPointer = ParseUser(null, null, null)..objectId = patientId;
+      final qPointer = QueryBuilder<ParseObject>(ParseObject('CarePlan'))
+        ..whereEqualTo('patient', patientPointer.toPointer());
+
+      // Combine queries
+      query = QueryBuilder.or(ParseObject('CarePlan'), [qString, qPointer]);
+    } else {
+      query = QueryBuilder<ParseObject>(ParseObject('CarePlan'));
     }
 
     if (doctorId != null) {
@@ -113,7 +125,10 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     }
 
     // Include doctor details if needed
-    query.includeObject(['doctor']);
+    query.includeObject([
+      'doctor',
+      'patient',
+    ]); // Include patient too just in case
 
     final response = await query.query();
 
@@ -226,13 +241,21 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     String patientId,
     DateTime fromDate,
   ) async {
+    print(
+      'CoreLOG: getTaskLogsForPatientFromDate: PatientId: $patientId, From: $fromDate',
+    );
+
     // 1. Fetch plans for patient to get their IDs
     final plans = await get(patientId: patientId);
+    print('CoreLOG: found ${plans.length} plans for patient.');
+
     if (plans.isEmpty) return [];
 
     final planPointers = plans
-        .map((p) => ParseObject('CarePlan')..objectId = p.id)
+        .map((p) => (ParseObject('CarePlan')..objectId = p.id).toPointer())
         .toList();
+
+    print('CoreLOG: Plan Pointers: $planPointers');
 
     // 2. Query TaskLog where planId IN planPointers AND executedAt >= fromDate
     final query = QueryBuilder<TaskLog>(TaskLog())
@@ -240,15 +263,21 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
       ..whereGreaterThanOrEqualsTo('executedAt', fromDate)
       ..includeObject(['planId']);
 
+    // Limit to large number just in case
+    query.setLimit(1000);
+
     final response = await query.query();
 
     if (response.success && response.results != null) {
+      print('CoreLOG: Found ${response.results!.length} logs.');
       return (response.results as List<ParseObject>)
           .map((e) => e as TaskLog)
           .toList();
     } else if (response.success && response.results == null) {
+      print('CoreLOG: Found 0 logs (results is null).');
       return [];
     } else {
+      print('CoreLOG: Error fetching logs: ${response.error?.message}');
       throw ServerException(
         message: response.error?.message ?? 'Error fetching task logs',
       );

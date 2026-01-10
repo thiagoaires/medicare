@@ -52,18 +52,6 @@ class PatientDetailViewModel extends ChangeNotifier {
   }
 
   Future<void> loadAdherenceData(String patientId) async {
-    // 1. We need the plans to calculate goals (frequency)
-    // We can assume we need to fetch them. Does repository allow fetching by patientId?
-    // Repository method 'getPlansByPatientId' exists in remote source but usually exposed via UseCase 'GetPlansUseCase'.
-    // However, repository implementation might have it or we access via repository directly if exposed.
-    // The previous implementation of 'GetPlansUseCase' uses the repository.
-    // Let's assume we can add 'getPlans' to repository or we need to add a UseCase.
-    // Simplifying: Add getPlansByPatientId to Repository if not present, OR reuse existing if possible.
-    // Repository has: getPlans(patientId) -> Future<Either<Failure, List<CarePlanEntity>>>.
-    // Wait, the repository interface has getPlans(userId) - wait, check interface.
-    // Interface: Future<Either<Failure, List<CarePlanEntity>>> getPlans(String userId, String userType);
-
-    // Use the correct repository method
     final plansResult = await carePlanRepository.getPlansByPatientId(patientId);
 
     plansResult.fold(
@@ -72,17 +60,12 @@ class PatientDetailViewModel extends ChangeNotifier {
       },
       (plans) async {
         patientPlans = plans;
-        // 2. Fetch logs for last 7 days
-        final now = DateTime.now();
-        final sevenDaysAgo = now.subtract(const Duration(days: 7));
-        final startOf7DaysAgo = DateTime(
-          sevenDaysAgo.year,
-          sevenDaysAgo.month,
-          sevenDaysAgo.day,
-        );
+
+        // Fetch logs for all history (since 2000) to calculate accumulated adherence
+        final startOfTime = DateTime(2000);
 
         final logsResult = await carePlanRepository
-            .getTaskLogsForPatientFromDate(patientId, startOf7DaysAgo);
+            .getTaskLogsForPatientFromDate(patientId, startOfTime);
 
         logsResult.fold(
           (failure) {
@@ -90,6 +73,7 @@ class PatientDetailViewModel extends ChangeNotifier {
           },
           (logs) {
             _calculateAdherence(plans, logs);
+            notifyListeners(); // Notify to update UI with new calculations
           },
         );
       },
@@ -103,33 +87,75 @@ class PatientDetailViewModel extends ChangeNotifier {
     adherenceCounts.clear();
     adherenceGoals.clear();
 
-    for (final plan in plans) {
-      // Calculate Goal for 7 days
-      final freq = plan.frequency;
-      int DailyGoal = 1;
-      if (freq != null && freq > 0) {
-        DailyGoal = (24 / freq).floor();
-      }
-      final weeklyGoal = DailyGoal * 7;
-      adherenceGoals[plan.id] = weeklyGoal;
-      totalExpected += weeklyGoal;
+    final now = DateTime.now();
+    print(
+      'CoreLOG: Calculating adherence for ${plans.length} plans and ${logs.length} logs',
+    );
 
-      // Count logs
+    for (final plan in plans) {
+      // 1. Calculate Expected Doses (Accumulated)
+      final startDate = plan.startDate; // Assuming startDate is reliable
+
+      // Determine cutoff date: Min(now, plan.endDate)
+      // If plan has ended, we calculate expected doses only up to that end date.
+      DateTime cutoffDate = now;
+      if (plan.endDate != null && plan.endDate!.isBefore(now)) {
+        cutoffDate = plan.endDate!;
+      }
+
+      // Calculate days elapsed (inclusive of start and end dates)
+      // We use +1 to count the first day as a full day of treatment opportunity
+      int daysElapsed = cutoffDate.difference(startDate).inDays + 1;
+      if (daysElapsed < 1) daysElapsed = 1;
+
+      // Heuristic for Frequency (Interval in Hours)
+      // UX Fix: Users often confuse "1x per day" with "Frequency = 1" (which means every 1 hour)
+      // We apply a "Sanity Check" to fix these common mistakes.
+      int hoursInterval = plan.frequency ?? 24; // Default to 24h (1x day)
+
+      if (hoursInterval == 1) {
+        hoursInterval = 24; // User likely meant 1x per day
+      } else if (hoursInterval == 2) {
+        hoursInterval = 12; // User likely meant 2x per day
+      } else if (hoursInterval <= 0) {
+        hoursInterval = 24; // Fallback for bad data
+      }
+
+      // Calculate Daily Frequency (Doses per day)
+      int dailyFrequency = (24 / hoursInterval).floor();
+      if (dailyFrequency < 1) dailyFrequency = 1;
+
+      // Total expected since start
+      final planExpected = daysElapsed * dailyFrequency;
+      adherenceGoals[plan.id] = planExpected;
+      totalExpected += planExpected;
+
+      print(
+        'CoreLOG: Plan ${plan.title} (${plan.id}): Start=$startDate, Days=$daysElapsed, Daily=$dailyFrequency, TotalExpect=$planExpected',
+      );
+
+      // 2. Count Realized Doses (Total logs for this plan)
       final planLogs = logs.where((l) {
         final pointer = l.get<ParseObject>('planId');
+        // print('CoreLOG: Log ${l.objectId} points to ${pointer?.objectId}');
         return pointer?.objectId == plan.id;
       }).length;
+
+      print('CoreLOG: Plan ${plan.title} has $planLogs matching logs.');
+
       adherenceCounts[plan.id] = planLogs;
       totalExecuted += planLogs;
     }
 
+    // Overall Adherence (Average of percentages or Total/Total?)
+    // Request implies individual tracking, but card also needs overall.
+    // Let's keep overall as TotalRealized / TotalExpected for simplicity validation
     if (totalExpected > 0) {
       overallAdherence = (totalExecuted / totalExpected) * 100;
       if (overallAdherence > 100) overallAdherence = 100;
     } else {
-      overallAdherence =
-          0.0; // Or 100? If no tasks expected, adherence is N/A or 100. Let's say 0 for now or handled in UI.
-      if (plans.isEmpty) overallAdherence = 0; // No plans
+      overallAdherence = 0.0;
     }
+    print('CoreLOG: Overall Adherence: $overallAdherence%');
   }
 }

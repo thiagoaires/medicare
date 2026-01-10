@@ -22,6 +22,8 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
         doctorId: plan.doctorId,
         patientId: plan.patientId,
         startDate: plan.startDate,
+        endDate: plan.endDate,
+        frequency: plan.frequency,
       );
       await dataSource.create(model);
       return const Right(unit);
@@ -42,6 +44,8 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
         doctorId: plan.doctorId,
         patientId: plan.patientId,
         startDate: plan.startDate,
+        endDate: plan.endDate,
+        frequency: plan.frequency,
       );
       await dataSource.update(model);
       return const Right(unit);
@@ -77,6 +81,8 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
           doctorId: model.doctorId,
           patientId: model.patientId,
           startDate: model.startDate,
+          endDate: model.endDate,
+          frequency: model.frequency,
           patientName: namesMap[model.patientId.trim()], // Populate name
         );
       }).toList();
@@ -114,6 +120,8 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
           doctorId: model.doctorId,
           patientId: model.patientId,
           startDate: model.startDate,
+          endDate: model.endDate,
+          frequency: model.frequency,
           doctorName: namesMap[model.doctorId.trim()], // Populate name
         );
       }).toList();
@@ -133,6 +141,8 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
         doctorId: plan.doctorId,
         patientId: plan.patientId,
         startDate: plan.startDate,
+        endDate: plan.endDate,
+        frequency: plan.frequency,
       );
       await dataSource.registerExecution(model);
       return const Right(unit);

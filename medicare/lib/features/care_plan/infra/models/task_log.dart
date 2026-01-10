@@ -16,6 +16,12 @@ class TaskLog extends ParseObject implements ParseCloneable {
     final log = TaskLog();
     log.set(keyPlanId, ParseObject('CarePlan')..objectId = plan.id);
     log.set(keyExecutedAt, DateTime.now());
+
+    final acl = ParseACL();
+    acl.setPublicReadAccess(allowed: true);
+    acl.setPublicWriteAccess(allowed: false);
+    log.setACL(acl);
+
     return log;
   }
 }
