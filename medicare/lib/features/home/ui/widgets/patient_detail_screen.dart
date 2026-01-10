@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../auth/domain/entities/user_entity.dart';
+import '../../../doctor/ui/widgets/patient_evolution_chart.dart';
 import '../view_model/patient_detail_view_model.dart';
 
 class PatientDetailScreen extends StatefulWidget {
@@ -52,40 +53,64 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
             );
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: viewModel.history.length,
-            separatorBuilder: (context, index) => const Divider(),
-            itemBuilder: (context, index) {
-              final checkIn = viewModel.history[index];
-              final dateFormatted = DateFormat(
-                'dd/MM/yyyy - HH:mm',
-              ).format(checkIn.date);
+          return Column(
+            children: [
+              Card(
+                margin: const EdgeInsets.all(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Evolução da Dor/Humor',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 16),
+                      PatientEvolutionChart(checkIns: viewModel.history),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: viewModel.history.length,
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final checkIn = viewModel.history[index];
+                    final dateFormatted = DateFormat(
+                      'dd/MM/yyyy - HH:mm',
+                    ).format(checkIn.date);
 
-              return ListTile(
-                leading: Text(
-                  _getFeelingEmoji(checkIn.feeling),
-                  style: const TextStyle(fontSize: 24),
+                    return ListTile(
+                      leading: Text(
+                        _getFeelingEmoji(checkIn.feeling),
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                      title: Text(
+                        dateFormatted,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle:
+                          checkIn.notes != null && checkIn.notes!.isNotEmpty
+                          ? Text(checkIn.notes!)
+                          : null,
+                      trailing: checkIn.photoUrl != null
+                          ? IconButton(
+                              icon: const Icon(Icons.image, color: Colors.blue),
+                              onPressed: () =>
+                                  _showImageDialog(context, checkIn.photoUrl!),
+                            )
+                          : null,
+                      onTap: checkIn.photoUrl != null
+                          ? () => _showImageDialog(context, checkIn.photoUrl!)
+                          : null,
+                    );
+                  },
                 ),
-                title: Text(
-                  dateFormatted,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: checkIn.notes != null && checkIn.notes!.isNotEmpty
-                    ? Text(checkIn.notes!)
-                    : null,
-                trailing: checkIn.photoUrl != null
-                    ? IconButton(
-                        icon: const Icon(Icons.image, color: Colors.blue),
-                        onPressed: () =>
-                            _showImageDialog(context, checkIn.photoUrl!),
-                      )
-                    : null,
-                onTap: checkIn.photoUrl != null
-                    ? () => _showImageDialog(context, checkIn.photoUrl!)
-                    : null,
-              );
-            },
+              ),
+            ],
           );
         },
       ),

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   // New Color Palette
   static const Color frenchBlue = Color(0xFF274690); // Primary
-  static const Color darkCyan = Color(0xFF4E878C); // Secondary
+  static const Color apricot = Color(0xFFFFB74D); // Secondary FFB74D
   static const Color aliceBlue = Color(0xFFE8EEF2); // Background
   static const Color alabasterGrey = Color(
     0xFFDBDBDB,
@@ -17,7 +17,7 @@ class AppTheme {
 
   // Semantic Aliases
   static const Color primary = frenchBlue;
-  static const Color secondary = darkCyan;
+  static const Color secondary = apricot;
   static const Color background = aliceBlue;
 
   static ThemeData get lightTheme {

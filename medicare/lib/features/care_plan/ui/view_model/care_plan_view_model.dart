@@ -3,6 +3,8 @@ import '../../domain/entities/care_plan_entity.dart';
 import '../../domain/usecases/create_care_plan_usecase.dart';
 import '../../domain/usecases/get_plans_usecase.dart';
 import '../../domain/usecases/update_care_plan_usecase.dart';
+import '../../../auth/domain/usecases/search_patients_usecase.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../core/services/notification_service.dart';
 
@@ -10,18 +12,23 @@ class CarePlanViewModel extends ChangeNotifier {
   final CreateCarePlanUseCase createCarePlanUseCase;
   final GetPlansUseCase getPlansUseCase;
   final UpdateCarePlanUseCase updateCarePlanUseCase;
+  final SearchPatientsUseCase searchPatientsUseCase;
 
   CarePlanViewModel({
     required this.createCarePlanUseCase,
     required this.getPlansUseCase,
     required this.updateCarePlanUseCase,
+    required this.searchPatientsUseCase,
   });
 
   bool isLoading = false;
   String? errorMessage;
   List<CarePlanEntity> plans = [];
 
-  // ... fetchPlans ...
+  Future<List<UserEntity>> searchPatients(String term) async {
+    final result = await searchPatientsUseCase(term);
+    return result.fold((failure) => [], (users) => users);
+  }
 
   Future<void> fetchPlans(String userId, String userType) async {
     isLoading = true;

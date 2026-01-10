@@ -5,10 +5,14 @@ import 'core/services/notification_service.dart';
 import 'core/services/tts_service.dart';
 
 import 'features/auth/domain/repositories/auth_repository.dart';
+import 'features/auth/domain/repositories/user_repository.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
+import 'features/auth/domain/usecases/search_patients_usecase.dart';
 import 'features/auth/infra/datasources/auth_remote_datasource.dart';
+import 'features/auth/infra/datasources/user_remote_datasource.dart';
 import 'features/auth/infra/repositories/auth_repository_impl.dart';
+import 'features/auth/infra/repositories/user_repository_impl.dart';
 import 'features/auth/ui/view_model/auth_view_model.dart';
 
 import 'features/care_plan/domain/repositories/care_plan_repository.dart';
@@ -18,7 +22,11 @@ import 'features/care_plan/domain/usecases/update_care_plan_usecase.dart';
 import 'features/care_plan/infra/datasources/care_plan_remote_datasource.dart';
 import 'features/care_plan/infra/repositories/care_plan_repository_impl.dart';
 import 'features/care_plan/ui/view_model/care_plan_view_model.dart';
+
+import 'features/home/domain/usecases/get_doctor_stats_usecase.dart';
 import 'features/home/ui/view_model/home_view_model.dart';
+import 'features/home/ui/view_model/patient_detail_view_model.dart';
+
 import 'features/profile/domain/repositories/profile_repository.dart';
 import 'features/profile/domain/usecases/get_profile_usecase.dart';
 import 'features/profile/domain/usecases/logout_usecase.dart';
@@ -26,16 +34,15 @@ import 'features/profile/domain/usecases/update_profile_usecase.dart';
 import 'features/profile/infra/datasources/profile_remote_datasource.dart';
 import 'features/profile/infra/repositories/profile_repository_impl.dart';
 import 'features/profile/ui/view_model/profile_view_model.dart';
+
 import 'features/check_in/domain/repositories/check_in_repository.dart';
+import 'features/check_in/domain/usecases/get_patient_check_ins_usecase.dart';
 import 'features/check_in/domain/usecases/get_plan_history_usecase.dart';
+import 'features/check_in/domain/usecases/has_check_in_today_usecase.dart';
 import 'features/check_in/domain/usecases/perform_check_in_usecase.dart';
 import 'features/check_in/infra/datasources/check_in_remote_datasource.dart';
 import 'features/check_in/infra/repositories/check_in_repository_impl.dart';
 import 'features/check_in/ui/view_model/check_in_view_model.dart';
-import 'features/check_in/domain/usecases/get_patient_check_ins_usecase.dart';
-import 'features/check_in/domain/usecases/has_check_in_today_usecase.dart';
-import 'features/home/ui/view_model/patient_detail_view_model.dart';
-import 'features/home/domain/usecases/get_doctor_stats_usecase.dart';
 
 import 'features/chat/domain/repositories/chat_repository.dart';
 import 'features/chat/domain/usecases/get_messages_usecase.dart';
@@ -78,13 +85,18 @@ Future<void> init() async {
   // UseCases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  sl.registerLazySingleton(() => SearchPatientsUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(sl()));
 
   // DataSource
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => ParseAuthDataSourceImpl(),
+  );
+  sl.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceImpl(),
   );
 
   //! Features - CarePlan
@@ -94,6 +106,7 @@ Future<void> init() async {
       createCarePlanUseCase: sl(),
       getPlansUseCase: sl(),
       updateCarePlanUseCase: sl(),
+      searchPatientsUseCase: sl(),
     ),
   );
 
