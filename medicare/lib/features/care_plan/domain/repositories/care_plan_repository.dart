@@ -11,4 +11,6 @@ abstract class CarePlanRepository {
   Future<Either<Failure, List<CarePlanEntity>>> getPlansByDoctorId(
     String doctorId,
   );
+  Future<Either<Failure, Unit>> registerExecution(CarePlanEntity plan);
+  Future<Either<Failure, int>> getTodaysTaskCount(String planId);
 }

@@ -245,6 +245,98 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                               ],
                             ),
                             const SizedBox(height: 8),
+                            if (!isDoctor) ...[
+                              const Divider(height: 24),
+                              Text(
+                                'Status do Dia',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Consumer<CarePlanViewModel>(
+                                builder: (context, vm, _) {
+                                  final count =
+                                      vm.dailyTaskCounts[plan.id] ?? 0;
+                                  final goal = vm.dailyGoals[plan.id] ?? 1;
+                                  final isGoalMet = count >= goal;
+
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Concluído: $count / $goal',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey[800],
+                                          ),
+                                        ),
+                                      ),
+                                      if (isGoalMet)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withOpacity(
+                                              0.1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: const [
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Colors.green,
+                                                size: 16,
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                'Meta atingida',
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      else
+                                        ElevatedButton.icon(
+                                          onPressed: () {
+                                            context
+                                                .read<CarePlanViewModel>()
+                                                .registerExecution(plan);
+                                          },
+                                          icon: const Icon(
+                                            Icons.check,
+                                            size: 16,
+                                          ),
+                                          label: const Text('Marcar Feito'),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 10,
+                                            ),
+                                            textStyle: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ],
+                            const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [

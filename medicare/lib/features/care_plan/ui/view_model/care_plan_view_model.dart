@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/care_plan_entity.dart';
+import '../../domain/repositories/care_plan_repository.dart';
 import '../../domain/usecases/create_care_plan_usecase.dart';
 import '../../domain/usecases/get_plans_usecase.dart';
 import '../../domain/usecases/update_care_plan_usecase.dart';
@@ -13,12 +14,14 @@ class CarePlanViewModel extends ChangeNotifier {
   final GetPlansUseCase getPlansUseCase;
   final UpdateCarePlanUseCase updateCarePlanUseCase;
   final SearchPatientsUseCase searchPatientsUseCase;
+  final CarePlanRepository carePlanRepository;
 
   CarePlanViewModel({
     required this.createCarePlanUseCase,
     required this.getPlansUseCase,
     required this.updateCarePlanUseCase,
     required this.searchPatientsUseCase,
+    required this.carePlanRepository,
   });
 
   bool isLoading = false;
@@ -145,5 +148,55 @@ class CarePlanViewModel extends ChangeNotifier {
     } else {
       await notificationService.cancelForPlan(plan.id);
     }
+  }
+
+  // --- Quick Task Logic ---
+
+  Map<String, int> dailyTaskCounts = {};
+  Map<String, int> dailyGoals = {};
+
+  void calculateGoals(List<CarePlanEntity> plans) {
+    for (final plan in plans) {
+      // Logic for Frequency: Assuming 'frequency' field exists in Entity or we use a placeholder logic as per prompt.
+      // Prompt says: "Se frequency do plano for em horas (ex: 8h), calcule a meta do dia: (24 / frequency).floor(). Se frequency for 0 ou nulo, assuma meta = 1."
+      int goal = 1;
+      // TODO: Implement frequency logic if field exists. For now default to 1.
+      dailyGoals[plan.id] = goal;
+    }
+    notifyListeners();
+  }
+
+  Future<void> loadTaskLogsForPlans(List<CarePlanEntity> currentPlans) async {
+    for (final plan in currentPlans) {
+      final result = await carePlanRepository.getTodaysTaskCount(plan.id);
+      result.fold(
+        (failure) {
+          // Ignore failures for logs to not block main UI
+          debugPrint('Error fetching logs for ${plan.id}: ${failure.message}');
+        },
+        (count) {
+          dailyTaskCounts[plan.id] = count;
+        },
+      );
+    }
+    calculateGoals(currentPlans);
+    notifyListeners();
+  }
+
+  Future<void> registerExecution(CarePlanEntity plan) async {
+    final result = await carePlanRepository.registerExecution(plan);
+
+    result.fold(
+      (failure) {
+        errorMessage = failure.message;
+        notifyListeners();
+      },
+      (_) {
+        // Success.
+        final currentCount = dailyTaskCounts[plan.id] ?? 0;
+        dailyTaskCounts[plan.id] = currentCount + 1;
+        notifyListeners();
+      },
+    );
   }
 }

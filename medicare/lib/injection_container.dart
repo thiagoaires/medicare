@@ -107,6 +107,7 @@ Future<void> init() async {
       getPlansUseCase: sl(),
       updateCarePlanUseCase: sl(),
       searchPatientsUseCase: sl(),
+      carePlanRepository: sl(),
     ),
   );
 

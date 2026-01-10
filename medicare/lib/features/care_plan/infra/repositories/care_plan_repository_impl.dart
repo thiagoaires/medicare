@@ -101,4 +101,38 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
       return const Left(ServerFailure('Unexpected error fetching plans'));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> registerExecution(CarePlanEntity plan) async {
+    try {
+      final model = CarePlanModel(
+        id: plan.id,
+        title: plan.title,
+        description: plan.description,
+        doctorId: plan.doctorId,
+        patientId: plan.patientId,
+        startDate: plan.startDate,
+      );
+      await dataSource.registerExecution(model);
+      return const Right(unit);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return const Left(
+        ServerFailure('Unexpected error registering execution'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> getTodaysTaskCount(String planId) async {
+    try {
+      final logs = await dataSource.getTodaysTaskLogs(planId);
+      return Right(logs.length);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return const Left(ServerFailure('Unexpected error fetching task count'));
+    }
+  }
 }

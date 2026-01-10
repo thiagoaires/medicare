@@ -1,15 +1,54 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import '../../../core/errors/exceptions.dart';
 import '../models/care_plan_model.dart';
+import '../models/task_log.dart';
 
 abstract class CarePlanRemoteDataSource {
   Future<void> create(CarePlanModel plan);
   Future<List<CarePlanModel>> get({String? patientId, String? doctorId});
   Future<void> update(CarePlanModel plan);
   Future<List<Map<String, dynamic>>> getUsersByIds(List<String> ids);
+  Future<void> registerExecution(CarePlanModel plan);
+  Future<List<TaskLog>> getTodaysTaskLogs(String planId);
 }
 
 class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
+  @override
+  Future<void> registerExecution(CarePlanModel plan) async {
+    final taskLog = TaskLog.createForPlan(plan);
+    final response = await taskLog.save();
+
+    if (!response.success) {
+      throw ServerException(
+        message: response.error?.message ?? 'Error registering execution',
+      );
+    }
+  }
+
+  @override
+  Future<List<TaskLog>> getTodaysTaskLogs(String planId) async {
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+
+    final query = QueryBuilder<TaskLog>(TaskLog())
+      ..whereEqualTo('planId', ParseObject('CarePlan')..objectId = planId)
+      ..whereGreaterThanOrEqualsTo('executedAt', startOfDay);
+
+    final response = await query.query();
+
+    if (response.success && response.results != null) {
+      return (response.results as List<ParseObject>)
+          .map((e) => e as TaskLog)
+          .toList();
+    } else if (response.success && response.results == null) {
+      return [];
+    } else {
+      throw ServerException(
+        message: response.error?.message ?? 'Error fetching task logs',
+      );
+    }
+  }
+
   @override
   Future<void> create(CarePlanModel plan) async {
     final user = await ParseUser.currentUser() as ParseUser?;
