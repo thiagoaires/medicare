@@ -5,6 +5,7 @@ import '../../domain/entities/care_plan_entity.dart';
 import '../../domain/repositories/care_plan_repository.dart';
 import '../datasources/care_plan_remote_datasource.dart';
 import '../models/care_plan_model.dart';
+import '../models/task_log.dart';
 
 class CarePlanRepositoryImpl implements CarePlanRepository {
   final CarePlanRemoteDataSource dataSource;
@@ -94,11 +95,31 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
   ) async {
     try {
       final models = await dataSource.get(patientId: patientId);
-      return Right(models);
+
+      // Smart Fetching: Get Doctor Names
+      final doctorIds = models.map((e) => e.doctorId.trim()).toSet().toList();
+
+      final usersData = await dataSource.getUsersByIds(doctorIds);
+
+      final namesMap = {
+        for (var user in usersData)
+          (user['id'] as String).trim(): user['name'] as String,
+      };
+
+      final entities = models.map((model) {
+        return CarePlanEntity(
+          id: model.id,
+          title: model.title,
+          description: model.description,
+          doctorId: model.doctorId,
+          patientId: model.patientId,
+          startDate: model.startDate,
+          doctorName: namesMap[model.doctorId.trim()], // Populate name
+        );
+      }).toList();
+      return Right(entities);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
-    } catch (e) {
-      return const Left(ServerFailure('Unexpected error fetching plans'));
     }
   }
 
@@ -133,6 +154,24 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
       return Left(ServerFailure(e.message));
     } catch (e) {
       return const Left(ServerFailure('Unexpected error fetching task count'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<TaskLog>>> getTaskLogsForPatientFromDate(
+    String patientId,
+    DateTime fromDate,
+  ) async {
+    try {
+      final logs = await dataSource.getTaskLogsForPatientFromDate(
+        patientId,
+        fromDate,
+      );
+      return Right(logs);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return const Left(ServerFailure('Unexpected error fetching task logs'));
     }
   }
 }

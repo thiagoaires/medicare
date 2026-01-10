@@ -10,6 +10,10 @@ abstract class CarePlanRemoteDataSource {
   Future<List<Map<String, dynamic>>> getUsersByIds(List<String> ids);
   Future<void> registerExecution(CarePlanModel plan);
   Future<List<TaskLog>> getTodaysTaskLogs(String planId);
+  Future<List<TaskLog>> getTaskLogsForPatientFromDate(
+    String patientId,
+    DateTime fromDate,
+  );
 }
 
 class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
@@ -213,6 +217,40 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     } else {
       throw ServerException(
         message: response.error?.message ?? 'Error fetching users',
+      );
+    }
+  }
+
+  @override
+  Future<List<TaskLog>> getTaskLogsForPatientFromDate(
+    String patientId,
+    DateTime fromDate,
+  ) async {
+    // 1. Fetch plans for patient to get their IDs
+    final plans = await get(patientId: patientId);
+    if (plans.isEmpty) return [];
+
+    final planPointers = plans
+        .map((p) => ParseObject('CarePlan')..objectId = p.id)
+        .toList();
+
+    // 2. Query TaskLog where planId IN planPointers AND executedAt >= fromDate
+    final query = QueryBuilder<TaskLog>(TaskLog())
+      ..whereContainedIn('planId', planPointers)
+      ..whereGreaterThanOrEqualsTo('executedAt', fromDate)
+      ..includeObject(['planId']);
+
+    final response = await query.query();
+
+    if (response.success && response.results != null) {
+      return (response.results as List<ParseObject>)
+          .map((e) => e as TaskLog)
+          .toList();
+    } else if (response.success && response.results == null) {
+      return [];
+    } else {
+      throw ServerException(
+        message: response.error?.message ?? 'Error fetching task logs',
       );
     }
   }

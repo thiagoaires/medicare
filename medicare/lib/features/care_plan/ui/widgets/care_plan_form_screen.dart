@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
 import '../../domain/entities/care_plan_entity.dart';
 import '../view_model/care_plan_view_model.dart';
 import '../../../auth/domain/entities/user_entity.dart';
@@ -159,7 +160,7 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
                         _selectedPatientId = user.id;
                         // Display Format: Email (Name)
                         _patientIdController.text =
-                            "${user.email} (${user.name})";
+                            "${user.name} - ${user.email}";
                       });
                     },
                     emptyBuilder: (context) => const Padding(
@@ -170,7 +171,7 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
                   const SizedBox(height: 16),
                   ListTile(
                     title: Text(
-                      'Data de Início: ${_selectedDate.toLocal().toString().split(' ')[0]}',
+                      'Data de Início: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}',
                     ),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
@@ -191,9 +192,10 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
                   if (viewModel.isLoading)
                     const Center(child: CircularProgressIndicator())
                   else
-                    ElevatedButton(
+                    ElevatedButton.icon(
                       onPressed: _submit,
-                      child: Text(
+                      icon: Icon(_isEditing ? Icons.save : Icons.add),
+                      label: Text(
                         _isEditing ? 'Salvar Alterações' : 'Criar Plano',
                       ),
                     ),

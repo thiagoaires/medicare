@@ -52,6 +52,8 @@ class CarePlanViewModel extends ChangeNotifier {
       },
       (fetchedPlans) {
         plans = fetchedPlans;
+        // Load logs after fetching plans
+        loadTaskLogsForPlans(plans);
         isLoading = false;
         notifyListeners();
       },
@@ -185,20 +187,33 @@ class CarePlanViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> registerExecution(CarePlanEntity plan) async {
-    final result = await carePlanRepository.registerExecution(plan);
+  // --- Execution State Logic ---
+  final Map<String, bool> _executingStates = {};
 
-    result.fold(
-      (failure) {
-        errorMessage = failure.message;
-        notifyListeners();
-      },
-      (_) {
-        // Success.
-        final currentCount = dailyTaskCounts[plan.id] ?? 0;
-        dailyTaskCounts[plan.id] = currentCount + 1;
-        notifyListeners();
-      },
-    );
+  bool isPlanExecuting(String planId) => _executingStates[planId] ?? false;
+
+  Future<void> registerExecution(CarePlanEntity plan) async {
+    if (isPlanExecuting(plan.id)) return; // Prevent double click
+
+    _executingStates[plan.id] = true;
+    notifyListeners(); // Show spinner
+
+    try {
+      final result = await carePlanRepository.registerExecution(plan);
+
+      result.fold(
+        (failure) {
+          errorMessage = failure.message;
+        },
+        (_) {
+          // Success.
+          final currentCount = dailyTaskCounts[plan.id] ?? 0;
+          dailyTaskCounts[plan.id] = currentCount + 1;
+        },
+      );
+    } finally {
+      _executingStates[plan.id] = false;
+      notifyListeners(); // Hide spinner and update UI
+    }
   }
 }

@@ -171,7 +171,10 @@ Future<void> init() async {
     ),
   );
   sl.registerFactory(
-    () => PatientDetailViewModel(getPatientCheckInsUseCase: sl()),
+    () => PatientDetailViewModel(
+      getPatientCheckInsUseCase: sl(),
+      carePlanRepository: sl(),
+    ),
   );
 
   // UseCases

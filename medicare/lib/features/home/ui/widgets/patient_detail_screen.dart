@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../doctor/ui/widgets/patient_evolution_chart.dart';
 import '../view_model/patient_detail_view_model.dart';
+import 'adherence_report_card.dart';
 
 class PatientDetailScreen extends StatefulWidget {
   final UserEntity patient;
@@ -55,6 +56,12 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
           return Column(
             children: [
+              AdherenceReportCard(
+                overallAdherence: viewModel.overallAdherence,
+                plans: viewModel.patientPlans,
+                counts: viewModel.adherenceCounts,
+                goals: viewModel.adherenceGoals,
+              ),
               Card(
                 margin: const EdgeInsets.all(16),
                 child: Padding(

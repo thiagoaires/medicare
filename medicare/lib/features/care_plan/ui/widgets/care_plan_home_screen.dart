@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/care_plan_view_model.dart';
@@ -180,57 +181,69 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).primaryColor.withOpacity(0.05),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        isDoctor
-                                            ? Icons.person_outline
-                                            : Icons.medical_services_outlined,
-                                        size: 16,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        isDoctor
-                                            ? '${plan.patientName ?? plan.patientId}'
-                                            : 'Dr. ${plan.doctorName ?? "Não informado"}',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(
-                                      Icons.calendar_today_outlined,
-                                      size: 14,
-                                      color: Colors.grey[500],
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      plan.startDate.toString().split(' ')[0],
-                                      style: TextStyle(
-                                        color: Colors.grey[500],
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
                                       ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).primaryColor.withOpacity(0.05),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            isDoctor
+                                                ? Icons.person_outline
+                                                : Icons
+                                                      .medical_services_outlined,
+                                            size: 16,
+                                            color: Theme.of(
+                                              context,
+                                            ).primaryColor,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            isDoctor
+                                                ? '${plan.patientName ?? plan.patientId}'
+                                                : 'Dr. ${plan.doctorName ?? "Não informado"}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Theme.of(
+                                                context,
+                                              ).primaryColor,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_today_outlined,
+                                          size: 14,
+                                          color: Colors.grey[500],
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          DateFormat(
+                                            'dd/MM/yyyy',
+                                          ).format(plan.startDate),
+                                          style: TextStyle(
+                                            color: Colors.grey[500],
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -298,6 +311,14 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                                 ),
                                               ),
                                             ],
+                                          ),
+                                        )
+                                      else if (vm.isPlanExecuting(plan.id))
+                                        const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
                                           ),
                                         )
                                       else

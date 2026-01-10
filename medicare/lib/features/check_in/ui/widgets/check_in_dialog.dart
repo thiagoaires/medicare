@@ -43,12 +43,7 @@ class _CheckInDialogState extends State<CheckInDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-            left: 16,
-            right: 16,
-            top: 16,
-          ),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
