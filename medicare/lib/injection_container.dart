@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/tts_service.dart';
 
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/domain/usecases/login_usecase.dart';
@@ -66,6 +67,7 @@ Future<void> init() async {
 
   //! Core
   sl.registerLazySingleton<NotificationService>(() => NotificationService());
+  sl.registerLazySingleton<TtsService>(() => TtsService());
 
   //! Features - Auth
   // ViewModel

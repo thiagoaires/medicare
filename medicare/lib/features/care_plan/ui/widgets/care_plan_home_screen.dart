@@ -8,6 +8,7 @@ import '../../../check_in/ui/widgets/daily_check_in_button.dart';
 import '../../../check_in/ui/view_model/check_in_view_model.dart';
 import '../../../../injection_container.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../core/services/tts_service.dart';
 import '../../../home/ui/widgets/patient_detail_screen.dart';
 import '../../../home/ui/view_model/patient_detail_view_model.dart';
 import '../../../auth/domain/entities/user_entity.dart';
@@ -37,6 +38,8 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
               notificationService,
               carePlanViewModel.plans,
             );
+            // Initialize TTS
+            context.read<TtsService>().init();
           }
         });
       }
@@ -233,6 +236,39 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                     },
                                   ),
                                 ],
+                                // TTS Button
+                                ValueListenableBuilder<String?>(
+                                  valueListenable: context
+                                      .read<TtsService>()
+                                      .currentPlayingPlanId,
+                                  builder: (context, playingId, _) {
+                                    final isPlaying = playingId == plan.id;
+                                    return IconButton(
+                                      icon: Icon(
+                                        isPlaying
+                                            ? Icons.record_voice_over
+                                            : Icons.volume_up,
+                                        color: isPlaying
+                                            ? Colors.teal
+                                            : Colors.grey,
+                                        size: 24,
+                                      ),
+                                      tooltip: 'Ouvir instruções',
+                                      onPressed: () {
+                                        if (isPlaying) {
+                                          context.read<TtsService>().stop();
+                                        } else {
+                                          final textToRead =
+                                              'Remédio: ${plan.title}. Instruções: ${plan.description}';
+                                          context.read<TtsService>().speak(
+                                            textToRead,
+                                            plan.id,
+                                          );
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
                                 IconButton(
                                   icon: const Icon(Icons.chat, size: 24),
                                   onPressed: () {
