@@ -5,8 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/care_plan_view_model.dart';
 import 'care_plan_form_screen.dart';
-import '../../../check_in/ui/widgets/daily_check_in_button.dart';
-import '../../../check_in/ui/view_model/check_in_view_model.dart';
 import '../../../../injection_container.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/tts_service.dart';
@@ -142,14 +140,8 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                   ],
                 ),
               ),
-              if (!isDoctor && viewModel.plans.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ChangeNotifierProvider(
-                    create: (_) => sl<CheckInViewModel>(),
-                    child: DailyCheckInButton(planId: viewModel.plans.first.id),
-                  ),
-                ),
+              // Generic CheckIn Button Removed as per strict user request.
+              // "Se houver algum checkbox solto na PatientHomeScreen ou CheckInDialog perguntando 'Realizou as tarefas?', remova-o."
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),

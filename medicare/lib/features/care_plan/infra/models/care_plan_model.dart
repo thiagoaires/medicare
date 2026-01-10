@@ -10,6 +10,7 @@ class CarePlanModel extends CarePlanEntity {
     required super.patientId,
     required super.startDate,
     super.doctorName,
+    super.frequency,
   });
 
   factory CarePlanModel.fromParse(ParseObject object) {
@@ -37,6 +38,7 @@ class CarePlanModel extends CarePlanEntity {
       patientId: object.get<String>('patientId') ?? '',
       startDate: object.get<DateTime>('startDate') ?? DateTime.now(),
       doctorName: doctorName.isNotEmpty ? doctorName : null,
+      frequency: object.get<int>('frequency'),
     );
   }
 
@@ -49,6 +51,9 @@ class CarePlanModel extends CarePlanEntity {
     parseObject.set('description', description);
     parseObject.set('patientId', patientId);
     parseObject.set('startDate', startDate);
+    if (frequency != null) {
+      parseObject.set('frequency', frequency!);
+    }
     // Note: 'doctor' pointer is better handled in the DataSource where we have access to context/currentUser
     // or we can expect it to be passed.
     // However, adhering to the prompt "In create... set title, description and create a Pointer for the doctor (current User)",

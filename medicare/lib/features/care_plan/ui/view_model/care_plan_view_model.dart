@@ -157,10 +157,12 @@ class CarePlanViewModel extends ChangeNotifier {
 
   void calculateGoals(List<CarePlanEntity> plans) {
     for (final plan in plans) {
-      // Logic for Frequency: Assuming 'frequency' field exists in Entity or we use a placeholder logic as per prompt.
-      // Prompt says: "Se frequency do plano for em horas (ex: 8h), calcule a meta do dia: (24 / frequency).floor(). Se frequency for 0 ou nulo, assuma meta = 1."
+      // Prompt says: "Se frequency (horas) > 0: Meta = (24 / frequency).floor(). Se frequency for nulo ou 0: Meta = 1."
       int goal = 1;
-      // TODO: Implement frequency logic if field exists. For now default to 1.
+      final freq = plan.frequency;
+      if (freq != null && freq > 0) {
+        goal = (24 / freq).floor();
+      }
       dailyGoals[plan.id] = goal;
     }
     notifyListeners();
