@@ -104,6 +104,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                 ),
               Expanded(
                 child: ListView.builder(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
                   itemCount: viewModel.plans.length,
                   itemBuilder: (context, index) {
                     final plan = viewModel.plans[index];
@@ -113,39 +114,37 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                         vertical: 8.0,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    plan.title,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(plan.description),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    isDoctor
-                                        ? 'Paciente: ${plan.patientName ?? plan.patientId}'
-                                        : 'Médico: ${plan.doctorName ?? "Não informado"}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(plan.startDate.toString().split(' ')[0]),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 8),
                             Column(
-                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  plan.title,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(plan.description),
+                                const SizedBox(height: 4),
+                                Text(
+                                  isDoctor
+                                      ? 'Paciente: ${plan.patientName ?? plan.patientId}'
+                                      : 'Médico: ${plan.doctorName ?? "Não informado"}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(plan.startDate.toString().split(' ')[0]),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 if (isDoctor) ...[
                                   IconButton(
@@ -198,7 +197,9 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                               : Icons
                                                     .notifications_off_outlined,
                                           color: isEnabled
-                                              ? Colors.teal
+                                              ? Theme.of(
+                                                  context,
+                                                ).colorScheme.primary
                                               : Colors.grey,
                                           size: 24,
                                         ),
@@ -249,7 +250,9 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                             ? Icons.record_voice_over
                                             : Icons.volume_up,
                                         color: isPlaying
-                                            ? Colors.teal
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.primary
                                             : Colors.grey,
                                         size: 24,
                                       ),

@@ -27,63 +27,62 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
     // Watch AuthViewModel mainly for the name
     final user = context.select<AuthViewModel, dynamic>((vm) => vm.user);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Bem-vindo, Dr. ${user?.name ?? 'Médico'}',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 24),
-          Consumer<HomeViewModel>(
-            builder: (context, viewModel, _) {
-              if (viewModel.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+    return Scaffold(
+      appBar: AppBar(title: Text('Bem-vindo, Dr. ${user?.name ?? 'Médico'}')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Consumer<HomeViewModel>(
+              builder: (context, viewModel, _) {
+                if (viewModel.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-              final stats = viewModel.stats;
-              final totalPlans = stats?.totalPlans ?? 0;
-              final checkInsToday = stats?.checkInsToday ?? 0;
+                final stats = viewModel.stats;
+                final totalPlans = stats?.totalPlans ?? 0;
+                final checkInsToday = stats?.checkInsToday ?? 0;
 
-              return Row(
-                children: [
-                  Expanded(
-                    child: _DashboardCard(
+                return GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.25,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _DashboardCard(
                       title: 'Planos Ativos',
                       value: '$totalPlans',
                       icon: Icons.assignment,
-                      color: Colors.blueAccent,
-                      onTap: () {
-                        context.read<HomeViewModel>().setIndex(
-                          1,
-                        ); // Navigate to Care Plans
-                      },
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary, // French Blue
+                      onTap: () => context.read<HomeViewModel>().setIndex(1),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _DashboardCard(
+                    _DashboardCard(
                       title: 'Adesão Hoje',
                       value: '$checkInsToday',
                       icon: Icons.check_circle,
-                      color: Colors.green,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary, // Dark Cyan
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          // Placeholder para futuras implementações
-          const _DashboardCard(
-            title: 'Próximas Consultas',
-            value: '-',
-            icon: Icons.calendar_today,
-            color: Colors.grey,
-          ),
-        ],
+                    _DashboardCard(
+                      title: 'Próximas Consultas',
+                      value: '-',
+                      icon: Icons.calendar_today,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiary, // Evergreen (or similar)
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -107,14 +106,15 @@ class _DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
+      margin: const EdgeInsets.all(0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 40, color: color),
               const SizedBox(height: 12),

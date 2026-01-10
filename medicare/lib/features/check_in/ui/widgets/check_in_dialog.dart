@@ -87,10 +87,17 @@ class _CheckInDialogState extends State<CheckInDialog> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.blue.withOpacity(0.2) : null,
+                        color: isSelected
+                            ? Theme.of(
+                                context,
+                              ).colorScheme.primary.withOpacity(0.2)
+                            : null,
                         shape: BoxShape.circle,
                         border: isSelected
-                            ? Border.all(color: Colors.blue, width: 2)
+                            ? Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2,
+                              )
                             : null,
                       ),
                       child: Icon(
@@ -166,7 +173,9 @@ class _CheckInDialogState extends State<CheckInDialog> {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: Text(
                     viewModel.errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -187,7 +196,6 @@ class _CheckInDialogState extends State<CheckInDialog> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Check-in realizado com sucesso!'),
-                          backgroundColor: Colors.green,
                         ),
                       );
                     }

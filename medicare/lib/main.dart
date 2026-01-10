@@ -8,6 +8,7 @@ import 'features/chat/ui/widgets/chat_screen.dart';
 import 'features/core/ui/widgets/splash_screen.dart';
 import 'features/home/ui/widgets/home_screen.dart';
 import 'injection_container.dart' as di;
+import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,7 @@ class MedicareApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Medicare TCC',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: AppTheme.lightTheme,
         home: const SplashScreen(),
         routes: {
           '/login': (_) => const LoginScreen(),
