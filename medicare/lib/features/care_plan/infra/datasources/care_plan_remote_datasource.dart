@@ -241,21 +241,14 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     String patientId,
     DateTime fromDate,
   ) async {
-    print(
-      'CoreLOG: getTaskLogsForPatientFromDate: PatientId: $patientId, From: $fromDate',
-    );
-
     // 1. Fetch plans for patient to get their IDs
     final plans = await get(patientId: patientId);
-    print('CoreLOG: found ${plans.length} plans for patient.');
 
     if (plans.isEmpty) return [];
 
     final planPointers = plans
         .map((p) => (ParseObject('CarePlan')..objectId = p.id).toPointer())
         .toList();
-
-    print('CoreLOG: Plan Pointers: $planPointers');
 
     // 2. Query TaskLog where planId IN planPointers AND executedAt >= fromDate
     final query = QueryBuilder<TaskLog>(TaskLog())
@@ -269,15 +262,12 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     final response = await query.query();
 
     if (response.success && response.results != null) {
-      print('CoreLOG: Found ${response.results!.length} logs.');
       return (response.results as List<ParseObject>)
           .map((e) => e as TaskLog)
           .toList();
     } else if (response.success && response.results == null) {
-      print('CoreLOG: Found 0 logs (results is null).');
       return [];
     } else {
-      print('CoreLOG: Error fetching logs: ${response.error?.message}');
       throw ServerException(
         message: response.error?.message ?? 'Error fetching task logs',
       );

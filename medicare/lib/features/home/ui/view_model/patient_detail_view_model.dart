@@ -88,9 +88,6 @@ class PatientDetailViewModel extends ChangeNotifier {
     adherenceGoals.clear();
 
     final now = DateTime.now();
-    print(
-      'CoreLOG: Calculating adherence for ${plans.length} plans and ${logs.length} logs',
-    );
 
     for (final plan in plans) {
       // 1. Calculate Expected Doses (Accumulated)
@@ -130,18 +127,12 @@ class PatientDetailViewModel extends ChangeNotifier {
       adherenceGoals[plan.id] = planExpected;
       totalExpected += planExpected;
 
-      print(
-        'CoreLOG: Plan ${plan.title} (${plan.id}): Start=$startDate, Days=$daysElapsed, Daily=$dailyFrequency, TotalExpect=$planExpected',
-      );
-
       // 2. Count Realized Doses (Total logs for this plan)
       final planLogs = logs.where((l) {
         final pointer = l.get<ParseObject>('planId');
         // print('CoreLOG: Log ${l.objectId} points to ${pointer?.objectId}');
         return pointer?.objectId == plan.id;
       }).length;
-
-      print('CoreLOG: Plan ${plan.title} has $planLogs matching logs.');
 
       adherenceCounts[plan.id] = planLogs;
       totalExecuted += planLogs;
@@ -156,6 +147,5 @@ class PatientDetailViewModel extends ChangeNotifier {
     } else {
       overallAdherence = 0.0;
     }
-    print('CoreLOG: Overall Adherence: $overallAdherence%');
   }
 }
