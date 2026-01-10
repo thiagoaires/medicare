@@ -55,6 +55,7 @@ dependencies:
   google_fonts: ^4.0.4
   fl_chart: ^0.69.0
   flutter_typeahead: ^5.2.0
+  flutter_svg: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,7 @@ flutter:
   assets:
       - .env
       - assets/images/
+      - assets/svg/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

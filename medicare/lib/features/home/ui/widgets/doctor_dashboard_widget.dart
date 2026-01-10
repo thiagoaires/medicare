@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/home_view_model.dart';
@@ -45,8 +46,8 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
                 final checkInsToday = stats?.checkInsToday ?? 0;
 
                 return GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.25,
+                  crossAxisCount: 1,
+                  childAspectRatio: 1.9,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                   shrinkWrap: true,
@@ -55,27 +56,18 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
                     _DashboardCard(
                       title: 'Planos Ativos',
                       value: '$totalPlans',
-                      icon: Icons.assignment,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary, // French Blue
+                      svgAsset: 'assets/svg/medical_prescription_amico.svg',
                       onTap: () => context.read<HomeViewModel>().setIndex(1),
                     ),
                     _DashboardCard(
                       title: 'Adesão Hoje',
                       value: '$checkInsToday',
-                      icon: Icons.check_circle,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary, // Dark Cyan
+                      svgAsset: 'assets/svg/doctor_amico.svg',
                     ),
                     _DashboardCard(
                       title: 'Próximas Consultas',
                       value: '-',
-                      icon: Icons.calendar_today,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.tertiary, // Evergreen (or similar)
+                      svgAsset: 'assets/svg/online_doctor_amico.svg',
                     ),
                   ],
                 );
@@ -91,15 +83,13 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
 class _DashboardCard extends StatelessWidget {
   final String title;
   final String value;
-  final IconData icon;
-  final Color color;
+  final String svgAsset;
   final VoidCallback? onTap;
 
   const _DashboardCard({
     required this.title,
     required this.value,
-    required this.icon,
-    required this.color,
+    required this.svgAsset,
     this.onTap,
   });
 
@@ -112,21 +102,35 @@ class _DashboardCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          child: Row(
             children: [
-              Icon(icon, size: 40, color: color),
-              const SizedBox(height: 12),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(title, style: TextStyle(color: Colors.grey[600])),
+              const SizedBox(width: 16),
+              SvgPicture.asset(svgAsset, height: 144),
             ],
           ),
         ),
