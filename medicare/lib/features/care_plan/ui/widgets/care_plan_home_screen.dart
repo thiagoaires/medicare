@@ -7,6 +7,7 @@ import 'care_plan_form_screen.dart';
 import '../../../check_in/ui/widgets/daily_check_in_button.dart';
 import '../../../check_in/ui/view_model/check_in_view_model.dart';
 import '../../../../injection_container.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../home/ui/widgets/patient_detail_screen.dart';
 import '../../../home/ui/view_model/patient_detail_view_model.dart';
 import '../../../auth/domain/entities/user_entity.dart';
@@ -26,10 +27,18 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
       final authViewModel = context.read<AuthViewModel>();
       final user = authViewModel.user;
       if (user != null) {
-        context.read<CarePlanViewModel>().fetchPlans(
-          user.id,
-          user.type,
-        ); // user.type field name correction
+        final carePlanViewModel = context
+            .read<CarePlanViewModel>(); // Store reference
+        carePlanViewModel.fetchPlans(user.id, user.type).then((_) {
+          // Load prefreences after plans are fetched
+          if (mounted) {
+            final notificationService = context.read<NotificationService>();
+            carePlanViewModel.loadNotificationPreferences(
+              notificationService,
+              carePlanViewModel.plans,
+            );
+          }
+        });
       }
     });
   }
@@ -171,6 +180,57 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                       );
                                     },
                                     padding: EdgeInsets.zero,
+                                  ),
+                                ] else ...[
+                                  // Toggle Button for notifications - Interactive
+                                  Consumer<CarePlanViewModel>(
+                                    builder: (context, vm, _) {
+                                      final isEnabled =
+                                          vm.notificationStatus[plan.id] ??
+                                          true;
+                                      return IconButton(
+                                        icon: Icon(
+                                          isEnabled
+                                              ? Icons.notifications_active
+                                              : Icons
+                                                    .notifications_off_outlined,
+                                          color: isEnabled
+                                              ? Colors.teal
+                                              : Colors.grey,
+                                          size: 24,
+                                        ),
+                                        tooltip: isEnabled
+                                            ? 'Desativar lembretes'
+                                            : 'Ativar lembretes',
+                                        onPressed: () async {
+                                          final notificationService = context
+                                              .read<NotificationService>();
+                                          await vm.toggleNotification(
+                                            plan,
+                                            notificationService,
+                                          );
+
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  vm.notificationStatus[plan
+                                                              .id] ==
+                                                          true
+                                                      ? 'Lembretes ativados para ${plan.title}'
+                                                      : 'Lembretes desativados para ${plan.title}',
+                                                ),
+                                                duration: const Duration(
+                                                  milliseconds: 1500,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    },
                                   ),
                                 ],
                                 IconButton(

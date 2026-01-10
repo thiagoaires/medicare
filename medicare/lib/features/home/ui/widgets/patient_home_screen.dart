@@ -5,6 +5,7 @@ import '../../../care_plan/ui/view_model/care_plan_view_model.dart';
 import '../../../profile/ui/widgets/profile_screen.dart';
 import '../../../check_in/ui/widgets/check_in_dialog.dart';
 import '../../../check_in/ui/view_model/check_in_view_model.dart';
+import '../../../../core/services/notification_service.dart';
 
 class PatientHomeScreen extends StatefulWidget {
   const PatientHomeScreen({super.key});
@@ -21,13 +22,19 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Initialize Notification Service
+      final notificationService = context.read<NotificationService>();
+      await notificationService.initialize();
+      await notificationService.requestPermissions();
+
       // Listen to CarePlanViewModel to know when plans are loaded
       final carePlanViewModel = context.read<CarePlanViewModel>();
       carePlanViewModel.addListener(_onCarePlansChanged);
       // Check immediately if already loaded
       if (carePlanViewModel.plans.isNotEmpty) {
         _checkStatus(carePlanViewModel.plans.first.id);
+        _scheduleNotifications(carePlanViewModel.plans);
       }
     });
   }
@@ -36,11 +43,21 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
     final carePlanViewModel = context.read<CarePlanViewModel>();
     if (carePlanViewModel.plans.isNotEmpty) {
       _checkStatus(carePlanViewModel.plans.first.id);
-      // Remove listener if we only want to check once?
-      // Or keep it if plans can change?
-      // For now, let's remove to avoid spamming IF the plan doesn't change often.
-      // But if user has 0 plans then gets 1, we need it.
-      carePlanViewModel.removeListener(_onCarePlansChanged);
+      _scheduleNotifications(carePlanViewModel.plans);
+
+      // Remove listener to avoid repeated scheduling?
+      // If plans change (added/removed), we want to reschedule.
+      // So let's keep it but maybe optimize to not spam cancelAll.
+      // For MVP safely rescheduling is fine.
+    }
+  }
+
+  Future<void> _scheduleNotifications(List<dynamic> plans) async {
+    final notificationService = context.read<NotificationService>();
+    await notificationService.cancelAll();
+
+    for (final plan in plans) {
+      await notificationService.scheduleFromPlan(plan);
     }
   }
 

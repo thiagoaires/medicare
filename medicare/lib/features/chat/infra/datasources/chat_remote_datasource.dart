@@ -48,13 +48,9 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       final response = await message.save();
 
       if (!response.success) {
-        print(
-          'Error saving message: ${response.error?.message}',
-        ); // Debug print
         throw const ServerException(message: 'Failed to save message');
       }
     } catch (e) {
-      print('SendMessage Error: $e'); // Debug print
       throw const ServerException(message: 'Failed to send message');
     }
   }

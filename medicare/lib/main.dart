@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz; // Import timezone data
 import 'features/auth/ui/view_model/auth_view_model.dart';
 import 'features/auth/ui/widgets/login_screen.dart';
 import 'features/chat/ui/view_model/chat_view_model.dart';
@@ -11,6 +12,7 @@ import 'injection_container.dart' as di;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init(); // Inicializa injeção de dependência e Parse
+  tz.initializeTimeZones(); // Initialize timezones
   runApp(const MedicareApp());
 }
 

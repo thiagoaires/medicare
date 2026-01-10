@@ -133,18 +133,8 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
     query.setLimit(1000);
 
     final response = await query.query();
-    print('DEBUG: Chegou resposta do servidor.');
-    print('DEBUG: Sucesso? ${response.success}');
-    print('DEBUG: Erro? ${response.error?.message}');
-    print(
-      'DEBUG: Quantidade de usuários encontrados: ${response.results?.length ?? 0}',
-    );
+
     if (response.success && response.results != null) {
-      if (response.results!.isNotEmpty) {
-        print(
-          'DEBUG USER JSON: ${(response.results!.first as ParseObject).toString()}',
-        );
-      }
       return (response.results as List<ParseObject>).map((e) {
         return {
           'id': e.objectId, // Return actual ObjectId
@@ -162,9 +152,7 @@ class ParseCarePlanDataSourceImpl implements CarePlanRemoteDataSource {
           // Or I check if 'username' IS in the `ids` list.
           'name': () {
             final fullName = e.get<String>('fullName');
-            if (fullName == null) {
-              print('AVISO: Campo fullName veio nulo para o ID ${e.objectId}');
-            }
+
             if (fullName != null && fullName.isNotEmpty) return fullName;
 
             final username = e.get<String>('username');
