@@ -58,31 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Perfil'),
-        actions: [
-          Consumer<ProfileViewModel>(
-            builder: (context, viewModel, _) {
-              if (viewModel.isLoading) return const SizedBox.shrink();
-
-              return IconButton(
-                icon: Icon(viewModel.isEditing ? Icons.check : Icons.edit),
-                onPressed: () {
-                  if (viewModel.isEditing) {
-                    viewModel.saveProfile(
-                      _nameController.text,
-                      _phoneController.text,
-                      _crmController.text,
-                    );
-                  } else {
-                    viewModel.toggleEdit();
-                  }
-                },
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(toolbarHeight: 0),
       body: Consumer<ProfileViewModel>(
         builder: (context, viewModel, _) {
           _updateControllers(viewModel);
@@ -103,27 +79,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ? profile.name.trim().split(' ').map((e) => e[0]).take(2).join()
               : '?';
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView(
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 24.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    child: Text(
-                      initials.toUpperCase(),
-                      style: const TextStyle(fontSize: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Perfil',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: -0.5,
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Center(
-                  child: Text(
-                    profile.email,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
+                    IconButton(
+                      icon: Icon(
+                        viewModel.isEditing ? Icons.check : Icons.edit_outlined,
+                        color: Theme.of(context).primaryColor,
+                        size: 28,
+                      ),
+                      onPressed: () {
+                        if (viewModel.isEditing) {
+                          viewModel.saveProfile(
+                            _nameController.text,
+                            _phoneController.text,
+                            _crmController.text,
+                          );
+                        } else {
+                          viewModel.toggleEdit();
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 32),
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withOpacity(0.2),
+                            width: 3,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 56,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).primaryColor.withOpacity(0.1),
+                          child: Text(
+                            initials.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        profile.email,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 48),
 
                 TextFormField(
                   controller: _nameController,
@@ -139,11 +177,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextFormField(
                   controller: _phoneController,
                   readOnly: !viewModel.isEditing,
-                  keyboardType: TextInputType.number, // Input numérico
+                  keyboardType: TextInputType.number,
                   inputFormatters: [
-                    FilteringTextInputFormatter
-                        .digitsOnly, // Garante que só entra número antes do custom
-                    PhoneInputFormatter(), // Aplica a máscara
+                    FilteringTextInputFormatter.digitsOnly,
+                    PhoneInputFormatter(),
                   ],
                   decoration: InputDecoration(
                     labelText: 'Telefone',
@@ -170,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 48),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
+                  child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -178,7 +215,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: viewModel.isLoading
                         ? null
                         : () => viewModel.logout(context),
-                    child: const Text('Sair do Aplicativo'),
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Sair do Aplicativo'),
                   ),
                 ),
               ],

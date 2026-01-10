@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../view_model/auth_view_model.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -69,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cadastro')),
+      appBar: AppBar(toolbarHeight: 0),
       body: Consumer<AuthViewModel>(
         builder: (context, authViewModel, _) {
           if (authViewModel.status == AuthStatus.loading) {
@@ -77,9 +78,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 24.0,
+            ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    padding: EdgeInsets.zero,
+                    alignment: Alignment.centerLeft,
+                    iconSize: 28,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Criar Conta',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).primaryColor,
+                    letterSpacing: -1.0,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Preencha seus dados para começar.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 32),
+
                 if (authViewModel.status == AuthStatus.error) ...[
                   Text(
                     authViewModel.errorMessage ?? 'Erro',
@@ -131,10 +170,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 24),
-                ElevatedButton(
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
                   onPressed: _onRegister,
-                  child: const Text('Cadastrar'),
+                  icon: const Icon(Icons.person_add),
+                  label: const Text('Cadastrar'),
                 ),
               ],
             ),

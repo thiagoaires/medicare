@@ -59,14 +59,14 @@ class AppTheme {
 
       // FAB Theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: primary,
+        backgroundColor: secondary,
         foregroundColor: Colors.white,
       ),
 
       // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primary,
+          backgroundColor: secondary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

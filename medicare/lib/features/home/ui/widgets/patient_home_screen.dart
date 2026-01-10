@@ -87,6 +87,7 @@ class _PatientHomeScreenState extends State<PatientHomeScreen> {
             _currentIndex = index;
           });
         },
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.medical_services),

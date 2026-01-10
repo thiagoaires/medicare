@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../view_model/auth_view_model.dart';
 import 'register_screen.dart';
 
@@ -58,18 +59,49 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(toolbarHeight: 0),
       body: Consumer<AuthViewModel>(
         builder: (context, authViewModel, _) {
           if (authViewModel.status == AuthStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 48.0,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: 40),
+                Text(
+                  'Bem-vindo',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).primaryColor,
+                    letterSpacing: -1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Entre para acessar seus planos.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                SvgPicture.asset(
+                  'assets/svg/online_doctor_cuate.svg',
+                  height: 180,
+                ),
+                const SizedBox(height: 32),
                 TextField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
@@ -82,11 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: _onLogin,
-                  child: const Text('Entrar'),
+                  icon: const Icon(Icons.login),
+                  label: const Text('Entrar'),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 TextButton(
                   onPressed: () {
                     Navigator.push(

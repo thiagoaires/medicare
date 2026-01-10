@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../view_model/home_view_model.dart';
 import '../../../care_plan/ui/widgets/care_plan_home_screen.dart';
 import '../../../profile/ui/widgets/profile_screen.dart';
 import 'doctor_dashboard_widget.dart';
@@ -11,8 +13,6 @@ class DoctorHomeScreen extends StatefulWidget {
 }
 
 class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _pages = const [
     DoctorDashboardWidget(),
     CarePlanHomeScreen(),
@@ -21,15 +21,17 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<HomeViewModel>();
+    final currentIndex = viewModel.currentIndex;
+
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: IndexedStack(index: currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          viewModel.setIndex(index);
         },
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Planos'),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/care_plan_view_model.dart';
@@ -77,7 +78,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
     final isDoctor = user?.type == 'medico';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Planos de Cuidado')),
+      appBar: AppBar(toolbarHeight: 0),
       body: Consumer<CarePlanViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading) {
@@ -93,7 +94,54 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
           }
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Planos de Cuidado',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).primaryColor,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            isDoctor
+                                ? 'Gerencie tratamentos, monitore a adesão e acompanhe a evolução dos pacientes.'
+                                : 'Visualize seus planos, controle horários e reporte sua evolução para o médico.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: SizedBox(
+                            height: 160,
+                            child: SvgPicture.asset(
+                              'assets/svg/online_doctor_amico.svg',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               if (!isDoctor && viewModel.plans.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -114,7 +162,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                         vertical: 8.0,
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -123,23 +171,77 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                               children: [
                                 Text(
                                   plan.title,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(plan.description),
-                                const SizedBox(height: 4),
-                                Text(
-                                  isDoctor
-                                      ? 'Paciente: ${plan.patientName ?? plan.patientId}'
-                                      : 'Médico: ${plan.doctorName ?? "Não informado"}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: Theme.of(context).primaryColor,
+                                    letterSpacing: -0.5,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(plan.startDate.toString().split(' ')[0]),
+                                const SizedBox(height: 8),
+                                Text(
+                                  plan.description,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[700],
+                                    height: 1.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    ).primaryColor.withOpacity(0.05),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        isDoctor
+                                            ? Icons.person_outline
+                                            : Icons.medical_services_outlined,
+                                        size: 16,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        isDoctor
+                                            ? '${plan.patientName ?? plan.patientId}'
+                                            : 'Dr. ${plan.doctorName ?? "Não informado"}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today_outlined,
+                                      size: 14,
+                                      color: Colors.grey[500],
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      plan.startDate.toString().split(' ')[0],
+                                      style: TextStyle(
+                                        color: Colors.grey[500],
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                             const SizedBox(height: 8),

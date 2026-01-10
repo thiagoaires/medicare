@@ -29,12 +29,31 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
     final user = context.select<AuthViewModel, dynamic>((vm) => vm.user);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Bem-vindo, Dr. ${user?.name ?? 'Médico'}')),
+      appBar: AppBar(toolbarHeight: 0),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Olá, Dr. ${user?.name?.split(' ').first ?? 'Médico'}',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: Theme.of(context).primaryColor,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Aqui está o resumo dos seus planos',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 32),
             Consumer<HomeViewModel>(
               builder: (context, viewModel, _) {
                 if (viewModel.isLoading) {
@@ -102,7 +121,7 @@ class _DashboardCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Row(
             children: [
               Expanded(
@@ -112,25 +131,49 @@ class _DashboardCard extends StatelessWidget {
                   children: [
                     Text(
                       value,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 48,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey,
+                        fontWeight: FontWeight.w800,
+                        color: Theme.of(context).primaryColor,
+                        height: 1.0,
+                        letterSpacing: -1.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[600],
                       ),
                     ),
+                    if (onTap != null) ...[
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Text(
+                            'Ver detalhes',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 16,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
-              SvgPicture.asset(svgAsset, height: 144),
+              const SizedBox(width: 8),
+              SvgPicture.asset(svgAsset, height: 140),
             ],
           ),
         ),
