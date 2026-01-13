@@ -57,9 +57,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
             return UserEntity(
               id: e.objectId!,
-              name: displayName,
+              username: displayName,
               email: displayEmail,
-              type: e.get<String>('userType') ?? 'paciente',
+              userType: e.get<String>('userType') ?? 'paciente',
             );
           })
           .toList();

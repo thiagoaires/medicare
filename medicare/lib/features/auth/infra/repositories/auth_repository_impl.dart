@@ -27,13 +27,30 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, UserEntity>> register(
-    String name,
+    String username,
     String email,
     String password,
-    String type,
+    String userType,
   ) async {
     try {
-      final user = await remoteDataSource.register(name, email, password, type);
+      final user = await remoteDataSource.register(
+        username,
+        email,
+        password,
+        userType,
+      );
+      return Right(user);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('Erro desconhecido: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity?>> getCurrentUser() async {
+    try {
+      final user = await remoteDataSource.getCurrentUser();
       return Right(user);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));

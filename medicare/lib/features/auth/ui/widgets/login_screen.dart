@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(
             context,
             '/home',
-            arguments: user.type,
+            arguments: user.userType,
           );
         }
       } else if (authViewModel.status == AuthStatus.error) {

@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushReplacementNamed(
             context,
             '/home',
-            arguments: user.type,
+            arguments: user.userType,
           );
         } else {
           // Fallback to login if user object missing despite 'true' (unlikely)

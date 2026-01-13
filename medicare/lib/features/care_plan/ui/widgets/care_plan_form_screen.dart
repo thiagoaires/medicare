@@ -158,7 +158,7 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
                     itemBuilder: (context, UserEntity user) {
                       return ListTile(
                         title: Text(user.email),
-                        subtitle: Text(user.name),
+                        subtitle: Text(user.username),
                       );
                     },
                     onSelected: (UserEntity user) {
@@ -166,7 +166,7 @@ class _CarePlanFormScreenState extends State<CarePlanFormScreen> {
                         _selectedPatientId = user.id;
                         // Display Format: Email (Name)
                         _patientIdController.text =
-                            "${user.name} - ${user.email}";
+                            "${user.username} - ${user.email}";
                       });
                     },
                     emptyBuilder: (context) => const Padding(

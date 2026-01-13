@@ -55,7 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           '/home',
           (route) => false,
           arguments: {
-            'userType': authViewModel.user!.type,
+            'userType': authViewModel.user!.userType,
             'userId': authViewModel.user!.id,
           },
         );

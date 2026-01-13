@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/user_entity.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
-
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 enum AuthStatus { initial, loading, success, error }
 
 class AuthViewModel extends ChangeNotifier {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
+  final AuthRepository authRepository;
 
-  AuthViewModel({required this.loginUseCase, required this.registerUseCase});
+  AuthViewModel({
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.authRepository,
+  });
 
   AuthStatus _status = AuthStatus.initial;
   AuthStatus get status => _status;
@@ -82,31 +86,28 @@ class AuthViewModel extends ChangeNotifier {
     _status = AuthStatus.loading;
     notifyListeners();
 
-    try {
-      final user = await ParseUser.currentUser() as ParseUser?;
+    final result = await authRepository.getCurrentUser();
 
-      if (user != null && user.sessionToken != null) {
-        final response = await user.getUpdatedUser();
-        if (response.success && response.result != null) {
-          final updatedUser = response.result as ParseUser;
-          _user = UserEntity(
-            id: updatedUser.objectId!,
-            name: updatedUser.get<String>('name') ?? '',
-            email: updatedUser.emailAddress ?? '',
-            type: updatedUser.get<String>('userType') ?? 'paciente',
-          );
+    return result.fold(
+      (failure) {
+        _status = AuthStatus.initial;
+        _user = null;
+        notifyListeners();
+        return false;
+      },
+      (user) {
+        if (user != null) {
+          _user = user;
           _status = AuthStatus.success;
           notifyListeners();
           return true;
+        } else {
+          _status = AuthStatus.initial;
+          _user = null;
+          notifyListeners();
+          return false;
         }
-      }
-    } catch (e) {
-      // Error checking auth
-    }
-
-    _status = AuthStatus.initial;
-    _user = null;
-    notifyListeners();
-    return false;
+      },
+    );
   }
 }

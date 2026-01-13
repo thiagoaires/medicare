@@ -27,7 +27,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.patient.name)),
+      appBar: AppBar(title: Text(widget.patient.username)),
       body: Consumer<PatientDetailViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading) {

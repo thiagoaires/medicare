@@ -11,6 +11,7 @@ abstract class AuthRemoteDataSource {
     String password,
     String type,
   );
+  Future<UserModel?> getCurrentUser();
 }
 
 class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
@@ -62,6 +63,22 @@ class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
       throw ServerException(
         message: response.error?.message ?? 'Erro ao cadastrar',
       );
+    }
+  }
+
+  @override
+  Future<UserModel?> getCurrentUser() async {
+    try {
+      final user = await ParseUser.currentUser() as ParseUser?;
+      if (user != null && user.sessionToken != null) {
+        final response = await user.getUpdatedUser();
+        if (response.success && response.result != null) {
+          return UserModel.fromParse(response.result as ParseUser);
+        }
+      }
+      return null;
+    } catch (e) {
+      throw ServerException(message: 'Erro ao buscar usuário atual: $e');
     }
   }
 }

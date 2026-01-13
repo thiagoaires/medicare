@@ -79,7 +79,11 @@ Future<void> init() async {
   //! Features - Auth
   // ViewModel
   sl.registerFactory(
-    () => AuthViewModel(loginUseCase: sl(), registerUseCase: sl()),
+    () => AuthViewModel(
+      loginUseCase: sl(),
+      registerUseCase: sl(),
+      authRepository: sl(),
+    ),
   );
 
   // UseCases

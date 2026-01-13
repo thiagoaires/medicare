@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import '../../../check_in/domain/entities/check_in_entity.dart';
 import '../../../check_in/domain/usecases/get_patient_check_ins_usecase.dart';
 import '../../../care_plan/domain/repositories/care_plan_repository.dart';
-import '../../../care_plan/infra/models/task_log.dart';
+import '../../../care_plan/domain/entities/task_log_entity.dart';
 import '../../../care_plan/domain/entities/care_plan_entity.dart';
 
 class PatientDetailViewModel extends ChangeNotifier {
@@ -80,7 +79,10 @@ class PatientDetailViewModel extends ChangeNotifier {
     );
   }
 
-  void _calculateAdherence(List<CarePlanEntity> plans, List<TaskLog> logs) {
+  void _calculateAdherence(
+    List<CarePlanEntity> plans,
+    List<TaskLogEntity> logs,
+  ) {
     int totalExpected = 0;
     int totalExecuted = 0;
 
@@ -129,9 +131,7 @@ class PatientDetailViewModel extends ChangeNotifier {
 
       // 2. Count Realized Doses (Total logs for this plan)
       final planLogs = logs.where((l) {
-        final pointer = l.get<ParseObject>('planId');
-        // print('CoreLOG: Log ${l.objectId} points to ${pointer?.objectId}');
-        return pointer?.objectId == plan.id;
+        return l.planId == plan.id;
       }).length;
 
       adherenceCounts[plan.id] = planLogs;

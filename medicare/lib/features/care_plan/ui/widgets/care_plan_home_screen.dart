@@ -32,7 +32,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
       if (user != null) {
         final carePlanViewModel = context
             .read<CarePlanViewModel>(); // Store reference
-        carePlanViewModel.fetchPlans(user.id, user.type).then((_) {
+        carePlanViewModel.fetchPlans(user.id, user.userType).then((_) {
           // Load prefreences after plans are fetched
           if (mounted) {
             final notificationService = context.read<NotificationService>();
@@ -42,7 +42,8 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
             );
 
             // Check daily check-in status
-            if (carePlanViewModel.plans.isNotEmpty && user.type != 'medico') {
+            if (carePlanViewModel.plans.isNotEmpty &&
+                user.userType != 'medico') {
               context.read<CheckInViewModel>().checkStatus(
                 carePlanViewModel.plans.first.id,
               );
@@ -73,7 +74,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
       // Refresh list
       final user = context.read<AuthViewModel>().user;
       if (user != null) {
-        context.read<CarePlanViewModel>().fetchPlans(user.id, user.type);
+        context.read<CarePlanViewModel>().fetchPlans(user.id, user.userType);
       }
     }
   }
@@ -84,7 +85,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
     // Ideally AuthViewModel should be properly typed in selector.
     // Assuming AuthViewModel exposes 'user' which is UserEntity?.
     final user = context.select<AuthViewModel, dynamic>((vm) => vm.user);
-    final isDoctor = user?.type == 'medico';
+    final isDoctor = user?.userType == 'medico';
 
     return Scaffold(
       body: Consumer<CarePlanViewModel>(
@@ -94,7 +95,7 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
               if (user != null) {
                 await context.read<CarePlanViewModel>().fetchPlans(
                   user.id,
-                  user.type,
+                  user.userType,
                 );
                 if (context.mounted && !isDoctor) {
                   final plans = context.read<CarePlanViewModel>().plans;
@@ -426,12 +427,12 @@ class _CarePlanHomeScreenState extends State<CarePlanHomeScreen> {
                                               child: PatientDetailScreen(
                                                 patient: UserEntity(
                                                   id: plan.patientId,
-                                                  name:
+                                                  username:
                                                       plan.patientName ??
                                                       'Paciente',
                                                   email:
                                                       '', // Not needed for display
-                                                  type: 'paciente',
+                                                  userType: 'paciente',
                                                 ),
                                               ),
                                             ),

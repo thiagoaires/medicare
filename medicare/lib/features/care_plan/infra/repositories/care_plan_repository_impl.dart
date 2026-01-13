@@ -5,7 +5,7 @@ import '../../domain/entities/care_plan_entity.dart';
 import '../../domain/repositories/care_plan_repository.dart';
 import '../datasources/care_plan_remote_datasource.dart';
 import '../models/care_plan_model.dart';
-import '../models/task_log.dart';
+import '../../domain/entities/task_log_entity.dart';
 
 class CarePlanRepositoryImpl implements CarePlanRepository {
   final CarePlanRemoteDataSource dataSource;
@@ -168,7 +168,7 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
   }
 
   @override
-  Future<Either<Failure, List<TaskLog>>> getTaskLogsForPatientFromDate(
+  Future<Either<Failure, List<TaskLogEntity>>> getTaskLogsForPatientFromDate(
     String patientId,
     DateTime fromDate,
   ) async {
@@ -177,7 +177,8 @@ class CarePlanRepositoryImpl implements CarePlanRepository {
         patientId,
         fromDate,
       );
-      return Right(logs);
+      final entities = logs.map((log) => log.toEntity()).toList();
+      return Right(entities);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (e) {

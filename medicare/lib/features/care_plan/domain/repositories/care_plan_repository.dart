@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../core/errors/failures.dart';
 import '../entities/care_plan_entity.dart';
-import '../../infra/models/task_log.dart';
+import '../entities/task_log_entity.dart';
 
 abstract class CarePlanRepository {
   Future<Either<Failure, Unit>> createPlan(CarePlanEntity plan);
@@ -14,7 +14,7 @@ abstract class CarePlanRepository {
   );
   Future<Either<Failure, Unit>> registerExecution(CarePlanEntity plan);
   Future<Either<Failure, int>> getTodaysTaskCount(String planId);
-  Future<Either<Failure, List<TaskLog>>> getTaskLogsForPatientFromDate(
+  Future<Either<Failure, List<TaskLogEntity>>> getTaskLogsForPatientFromDate(
     String patientId,
     DateTime fromDate,
   );
