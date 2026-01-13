@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/ui/view_model/auth_view_model.dart';
 import '../view_model/home_view_model.dart';
 
@@ -26,7 +27,7 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
   @override
   Widget build(BuildContext context) {
     // Watch AuthViewModel mainly for the name
-    final user = context.select<AuthViewModel, dynamic>((vm) => vm.user);
+    final user = context.select<AuthViewModel, UserEntity?>((vm) => vm.user);
 
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
@@ -36,7 +37,7 @@ class _DoctorDashboardWidgetState extends State<DoctorDashboardWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Olá, Dr. ${user?.name?.split(' ').first ?? 'Médico'}',
+              'Olá, Dr. ${user?.username.split(' ').first ?? 'Médico'}',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
