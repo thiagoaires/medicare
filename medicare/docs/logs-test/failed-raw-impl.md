@@ -82,5 +82,3 @@ dart test test/arch_test/architecture_test.dart -p vm --plain-name 'Architecture
 ```
 
 ---
-
-**Você gostaria que eu explicasse como aplicar a Inversão de Dependência (DIP) para corrigir a importação do `parse_server_sdk` na sua ViewModel?**
