@@ -1,0 +1,1099 @@
+This package is entering the deprecation process and will be fully discontinued on July 16th.
+You can read more in this blog post https://dcm.dev/blog/2023/06/06/announcing-dcm-free-version-sunset/.
+
+We are grateful to you for being a DCM user. If you are a DCM contributor, you can apply for a special license, feel free to reach out to info@dcm.dev.
+
+If you think DCM is valuable and it helps you, please consider to upgrade to the new Individuals or Teams version.
+
+To hide this message pass the 'disable-sunset-warning' option.
+
+[2K⠙ Analyzing...[2K[2K⠹ Analyzing 76 file(s)... 0.2s[2K⠸ Analyzing 76 file(s)... 0.9s[2K⠼ Analyzing 76 file(s)... 1.0s[2K⠴ Analyzing 76 file(s)... 1.1s[2K⠦ Analyzing 76 file(s)... 1.5s[2K⠧ Analyzing 76 file(s)... 1.6s[2K⠇ Analyzing 76 file(s)... 1.9s[2K⠏ Analyzing 76 file(s)... 1.9s[2K⠋ Analyzing 76 file(s)... 2.0s[2K⠙ Analyzing 76 file(s)... 2.1s[2K⠹ Analyzing 76 file(s)... 2.2s[2K⠸ Analyzing 76 file(s)... 2.2s[2K⠼ Analyzing 76 file(s)... 2.3s[2K✔ Analysis is completed. Preparing the results: 2.4s
+
+lib/core/theme/app_theme.dart:
+ALARM   AppTheme.lightTheme
+        cyclomatic complexity: 1
+
+
+lib/core/services/tts_service.dart:
+ALARM   TtsService.init
+        cyclomatic complexity: 1
+
+ALARM   TtsService.speak
+        cyclomatic complexity: 1
+
+ALARM   TtsService.stop
+        cyclomatic complexity: 1
+
+
+lib/core/services/notification_service.dart:
+ALARM   NotificationService.initialize
+        cyclomatic complexity: 1
+
+ALARM   NotificationService.requestPermissions
+        cyclomatic complexity: 2
+
+ALARM   NotificationService.setNotificationEnabled
+        cyclomatic complexity: 2
+
+ALARM   NotificationService.isNotificationEnabled
+        cyclomatic complexity: 3
+
+ALARM   NotificationService.cancelAll
+        cyclomatic complexity: 1
+
+ALARM   NotificationService.cancelForPlan
+        cyclomatic complexity: 2
+
+ALARM   NotificationService.scheduleFromPlan
+        cyclomatic complexity: 6
+
+
+lib/features/care_plan/ui/view_model/care_plan_view_model.dart:
+ALARM   CarePlanViewModel.CarePlanViewModel
+        cyclomatic complexity: 1
+
+ALARM   CarePlanViewModel.searchPatients
+        cyclomatic complexity: 1
+
+ALARM   CarePlanViewModel.fetchPlans
+        cyclomatic complexity: 2
+
+ALARM   CarePlanViewModel.createPlan
+        cyclomatic complexity: 1
+
+ALARM   CarePlanViewModel.updatePlan
+        cyclomatic complexity: 1
+
+ALARM   CarePlanViewModel.loadNotificationPreferences
+        cyclomatic complexity: 2
+
+ALARM   CarePlanViewModel.toggleNotification
+        cyclomatic complexity: 7
+
+ALARM   CarePlanViewModel.calculateGoals
+        cyclomatic complexity: 4
+
+ALARM   CarePlanViewModel.loadTaskLogsForPlans
+        cyclomatic complexity: 2
+
+ALARM   CarePlanViewModel.isPlanExecuting
+        cyclomatic complexity: 2
+
+ALARM   CarePlanViewModel.registerExecution
+        cyclomatic complexity: 3
+
+
+lib/features/care_plan/ui/widgets/care_plan_form_screen.dart:
+ALARM   CarePlanFormScreen.CarePlanFormScreen
+        cyclomatic complexity: 1
+
+ALARM   CarePlanFormScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _CarePlanFormScreenState._isEditing
+        cyclomatic complexity: 1
+
+ALARM   _CarePlanFormScreenState.initState
+        cyclomatic complexity: 3
+
+ALARM   _CarePlanFormScreenState.dispose
+        cyclomatic complexity: 1
+
+ALARM   _CarePlanFormScreenState._submit
+        cyclomatic complexity: 10
+
+ALARM   _CarePlanFormScreenState.build
+        cyclomatic complexity: 18
+
+
+lib/features/care_plan/ui/widgets/care_plan_home_screen.dart:
+ALARM   CarePlanHomeScreen.CarePlanHomeScreen
+        cyclomatic complexity: 1
+
+ALARM   CarePlanHomeScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _CarePlanHomeScreenState.initState
+        cyclomatic complexity: 5
+
+ALARM   _CarePlanHomeScreenState._navigateToForm
+        cyclomatic complexity: 4
+
+ALARM   _CarePlanHomeScreenState.build
+        cyclomatic complexity: 30
+
+ALARM   _CarePlanHomeScreenState._buildCheckInButton
+        cyclomatic complexity: 4
+
+
+lib/features/care_plan/infra/datasources/care_plan_remote_datasource.dart:
+ALARM   CarePlanRemoteDataSource.create
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRemoteDataSource.get
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRemoteDataSource.update
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRemoteDataSource.getUsersByIds
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRemoteDataSource.registerExecution
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRemoteDataSource.getTodaysTaskLogs
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRemoteDataSource.getTaskLogsForPatientFromDate
+        cyclomatic complexity: 1
+
+ALARM   ParseCarePlanDataSourceImpl.registerExecution
+        cyclomatic complexity: 4
+
+ALARM   ParseCarePlanDataSourceImpl.getTodaysTaskLogs
+        cyclomatic complexity: 7
+
+ALARM   ParseCarePlanDataSourceImpl.create
+        cyclomatic complexity: 6
+
+ALARM   ParseCarePlanDataSourceImpl.get
+        cyclomatic complexity: 10
+
+ALARM   ParseCarePlanDataSourceImpl.update
+        cyclomatic complexity: 4
+
+ALARM   ParseCarePlanDataSourceImpl.getUsersByIds
+        cyclomatic complexity: 13
+
+ALARM   ParseCarePlanDataSourceImpl.getTaskLogsForPatientFromDate
+        cyclomatic complexity: 8
+
+
+lib/features/care_plan/infra/repositories/care_plan_repository_impl.dart:
+ALARM   CarePlanRepositoryImpl.CarePlanRepositoryImpl
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepositoryImpl.createPlan
+        cyclomatic complexity: 3
+
+ALARM   CarePlanRepositoryImpl.updatePlan
+        cyclomatic complexity: 3
+
+ALARM   CarePlanRepositoryImpl.getPlansByDoctorId
+        cyclomatic complexity: 3
+
+ALARM   CarePlanRepositoryImpl.getPlansByPatientId
+        cyclomatic complexity: 2
+
+ALARM   CarePlanRepositoryImpl.registerExecution
+        cyclomatic complexity: 3
+
+ALARM   CarePlanRepositoryImpl.getTodaysTaskCount
+        cyclomatic complexity: 3
+
+ALARM   CarePlanRepositoryImpl.getTaskLogsForPatientFromDate
+        cyclomatic complexity: 3
+
+
+lib/features/care_plan/infra/models/care_plan_model.dart:
+ALARM   CarePlanModel.CarePlanModel
+        cyclomatic complexity: 1
+
+ALARM   CarePlanModel.fromParse
+        cyclomatic complexity: 13
+
+ALARM   CarePlanModel.toParse
+        cyclomatic complexity: 4
+
+
+lib/features/care_plan/infra/models/task_log.dart:
+ALARM   TaskLog.TaskLog
+        cyclomatic complexity: 1
+
+ALARM   TaskLog.clone
+        cyclomatic complexity: 1
+
+ALARM   TaskLog.createForPlan
+        cyclomatic complexity: 1
+
+
+lib/features/care_plan/domain/repositories/care_plan_repository.dart:
+ALARM   CarePlanRepository.createPlan
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepository.updatePlan
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepository.getPlansByPatientId
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepository.getPlansByDoctorId
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepository.registerExecution
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepository.getTodaysTaskCount
+        cyclomatic complexity: 1
+
+ALARM   CarePlanRepository.getTaskLogsForPatientFromDate
+        cyclomatic complexity: 1
+
+
+lib/features/care_plan/domain/usecases/get_plans_usecase.dart:
+ALARM   GetPlansUseCase.GetPlansUseCase
+        cyclomatic complexity: 1
+
+ALARM   GetPlansUseCase.byPatientId
+        cyclomatic complexity: 1
+
+ALARM   GetPlansUseCase.byDoctorId
+        cyclomatic complexity: 1
+
+
+lib/features/care_plan/domain/usecases/create_care_plan_usecase.dart:
+ALARM   CreateCarePlanUseCase.CreateCarePlanUseCase
+        cyclomatic complexity: 1
+
+ALARM   CreateCarePlanUseCase.call
+        cyclomatic complexity: 2
+
+
+lib/features/care_plan/domain/usecases/update_care_plan_usecase.dart:
+ALARM   UpdateCarePlanUseCase.UpdateCarePlanUseCase
+        cyclomatic complexity: 1
+
+ALARM   UpdateCarePlanUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/care_plan/domain/entities/care_plan_entity.dart:
+ALARM   CarePlanEntity.CarePlanEntity
+        cyclomatic complexity: 1
+
+ALARM   CarePlanEntity.props
+        cyclomatic complexity: 1
+
+
+lib/features/home/ui/view_model/home_view_model.dart:
+ALARM   HomeViewModel.HomeViewModel
+        cyclomatic complexity: 1
+
+ALARM   HomeViewModel.currentIndex
+        cyclomatic complexity: 1
+
+ALARM   HomeViewModel.isLoading
+        cyclomatic complexity: 1
+
+ALARM   HomeViewModel.stats
+        cyclomatic complexity: 1
+
+ALARM   HomeViewModel.setIndex
+        cyclomatic complexity: 1
+
+ALARM   HomeViewModel.fetchDoctorStats
+        cyclomatic complexity: 2
+
+ALARM   HomeViewModel.logout
+        cyclomatic complexity: 1
+
+
+lib/features/home/ui/view_model/patient_detail_view_model.dart:
+ALARM   PatientDetailViewModel.PatientDetailViewModel
+        cyclomatic complexity: 1
+
+ALARM   PatientDetailViewModel.fetchHistory
+        cyclomatic complexity: 1
+
+ALARM   PatientDetailViewModel._loadHistory
+        cyclomatic complexity: 1
+
+ALARM   PatientDetailViewModel.loadAdherenceData
+        cyclomatic complexity: 1
+
+ALARM   PatientDetailViewModel._calculateAdherence
+        cyclomatic complexity: 13
+
+
+lib/features/home/ui/widgets/doctor_home_screen.dart:
+ALARM   DoctorHomeScreen.DoctorHomeScreen
+        cyclomatic complexity: 1
+
+ALARM   DoctorHomeScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _DoctorHomeScreenState.build
+        cyclomatic complexity: 1
+
+
+lib/features/home/ui/widgets/adherence_report_card.dart:
+ALARM   AdherenceReportCard.AdherenceReportCard
+        cyclomatic complexity: 1
+
+ALARM   AdherenceReportCard.build
+        cyclomatic complexity: 11
+
+
+lib/features/home/ui/widgets/patient_home_screen.dart:
+ALARM   PatientHomeScreen.PatientHomeScreen
+        cyclomatic complexity: 1
+
+ALARM   PatientHomeScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _PatientHomeScreenState.initState
+        cyclomatic complexity: 2
+
+ALARM   _PatientHomeScreenState._onCarePlansChanged
+        cyclomatic complexity: 2
+
+ALARM   _PatientHomeScreenState._scheduleNotifications
+        cyclomatic complexity: 2
+
+ALARM   _PatientHomeScreenState.build
+        cyclomatic complexity: 1
+
+
+lib/features/home/ui/widgets/doctor_dashboard_widget.dart:
+ALARM   DoctorDashboardWidget.DoctorDashboardWidget
+        cyclomatic complexity: 1
+
+ALARM   DoctorDashboardWidget.createState
+        cyclomatic complexity: 1
+
+ALARM   _DoctorDashboardWidgetState.initState
+        cyclomatic complexity: 2
+
+ALARM   _DoctorDashboardWidgetState.build
+        cyclomatic complexity: 9
+
+ALARM   _DashboardCard._DashboardCard
+        cyclomatic complexity: 1
+
+ALARM   _DashboardCard.build
+        cyclomatic complexity: 1
+
+
+lib/features/home/ui/widgets/home_screen.dart:
+ALARM   HomeScreen.HomeScreen
+        cyclomatic complexity: 1
+
+ALARM   HomeScreen.build
+        cyclomatic complexity: 3
+
+
+lib/features/home/ui/widgets/patient_detail_screen.dart:
+ALARM   PatientDetailScreen.PatientDetailScreen
+        cyclomatic complexity: 1
+
+ALARM   PatientDetailScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _PatientDetailScreenState.initState
+        cyclomatic complexity: 1
+
+ALARM   _PatientDetailScreenState.build
+        cyclomatic complexity: 8
+
+ALARM   _PatientDetailScreenState._getFeelingEmoji
+        cyclomatic complexity: 3
+
+ALARM   _PatientDetailScreenState._showImageDialog
+        cyclomatic complexity: 3
+
+
+lib/features/home/domain/usecases/get_doctor_stats_usecase.dart:
+ALARM   GetDoctorStatsUseCase.GetDoctorStatsUseCase
+        cyclomatic complexity: 1
+
+ALARM   GetDoctorStatsUseCase.call
+        cyclomatic complexity: 5
+
+
+lib/features/home/domain/entities/dashboard_stats.dart:
+ALARM   DashboardStats.DashboardStats
+        cyclomatic complexity: 1
+
+ALARM   DashboardStats.props
+        cyclomatic complexity: 1
+
+
+lib/features/core/ui/widgets/splash_screen.dart:
+ALARM   SplashScreen.SplashScreen
+        cyclomatic complexity: 1
+
+ALARM   SplashScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _SplashScreenState.initState
+        cyclomatic complexity: 4
+
+ALARM   _SplashScreenState.build
+        cyclomatic complexity: 1
+
+
+lib/features/core/utils/phone_input_formatter.dart:
+ALARM   PhoneInputFormatter.format
+        cyclomatic complexity: 7
+
+ALARM   PhoneInputFormatter.formatEditUpdate
+        cyclomatic complexity: 1
+
+
+lib/features/core/errors/exceptions.dart:
+ALARM   ServerException.ServerException
+        cyclomatic complexity: 1
+
+ALARM   ServerException.props
+        cyclomatic complexity: 1
+
+ALARM   CacheException.CacheException
+        cyclomatic complexity: 1
+
+ALARM   CacheException.props
+        cyclomatic complexity: 1
+
+
+lib/features/core/errors/failures.dart:
+ALARM   Failure.Failure
+        cyclomatic complexity: 1
+
+ALARM   Failure.props
+        cyclomatic complexity: 1
+
+ALARM   ServerFailure.ServerFailure
+        cyclomatic complexity: 1
+
+ALARM   CacheFailure.CacheFailure
+        cyclomatic complexity: 1
+
+ALARM   InvalidDataFailure.InvalidDataFailure
+        cyclomatic complexity: 1
+
+
+lib/features/chat/ui/view_model/chat_view_model.dart:
+ALARM   ChatViewModel.ChatViewModel
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.messages
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.isLoading
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.isRecording
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.isPlaying
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.dispose
+        cyclomatic complexity: 2
+
+ALARM   ChatViewModel.startPolling
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel._fetchMessages
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.isSending
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.sendMessage
+        cyclomatic complexity: 3
+
+ALARM   ChatViewModel.startRecording
+        cyclomatic complexity: 3
+
+ALARM   ChatViewModel.stopRecording
+        cyclomatic complexity: 3
+
+ALARM   ChatViewModel.playingMessageId
+        cyclomatic complexity: 1
+
+ALARM   ChatViewModel.playAudio
+        cyclomatic complexity: 3
+
+
+lib/features/chat/ui/widgets/chat_screen.dart:
+ALARM   ChatScreen.ChatScreen
+        cyclomatic complexity: 1
+
+ALARM   ChatScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _ChatScreenState.initState
+        cyclomatic complexity: 1
+
+ALARM   _ChatScreenState.dispose
+        cyclomatic complexity: 1
+
+ALARM   _ChatScreenState._handleMicPress
+        cyclomatic complexity: 5
+
+ALARM   _ChatScreenState._scrollToBottom
+        cyclomatic complexity: 2
+
+ALARM   _ChatScreenState.build
+        cyclomatic complexity: 2
+
+ALARM   _ChatScreenState._buildInputArea
+        cyclomatic complexity: 6
+
+ALARM   _MessageBubble._MessageBubble
+        cyclomatic complexity: 1
+
+ALARM   _MessageBubble.build
+        cyclomatic complexity: 6
+
+
+lib/features/chat/infra/datasources/chat_remote_datasource.dart:
+ALARM   ChatRemoteDataSource.sendMessage
+        cyclomatic complexity: 1
+
+ALARM   ChatRemoteDataSource.getMessages
+        cyclomatic complexity: 1
+
+ALARM   ChatRemoteDataSourceImpl.sendMessage
+        cyclomatic complexity: 7
+
+ALARM   ChatRemoteDataSourceImpl.getMessages
+        cyclomatic complexity: 6
+
+
+lib/features/chat/infra/repositories/chat_repository_impl.dart:
+ALARM   ChatRepositoryImpl.ChatRepositoryImpl
+        cyclomatic complexity: 1
+
+ALARM   ChatRepositoryImpl.sendMessage
+        cyclomatic complexity: 2
+
+ALARM   ChatRepositoryImpl.getMessages
+        cyclomatic complexity: 6
+
+
+lib/features/chat/domain/repositories/chat_repository.dart:
+ALARM   ChatRepository.sendMessage
+        cyclomatic complexity: 1
+
+ALARM   ChatRepository.getMessages
+        cyclomatic complexity: 1
+
+
+lib/features/chat/domain/usecases/get_messages_usecase.dart:
+ALARM   GetMessagesUseCase.GetMessagesUseCase
+        cyclomatic complexity: 1
+
+ALARM   GetMessagesUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/chat/domain/usecases/send_message_usecase.dart:
+ALARM   SendMessageUseCase.SendMessageUseCase
+        cyclomatic complexity: 1
+
+ALARM   SendMessageUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/chat/domain/entities/message_entity.dart:
+ALARM   MessageEntity.MessageEntity
+        cyclomatic complexity: 1
+
+ALARM   MessageEntity.props
+        cyclomatic complexity: 1
+
+
+lib/features/auth/ui/view_model/auth_view_model.dart:
+ALARM   AuthViewModel.AuthViewModel
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.status
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.user
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.errorMessage
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.login
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.register
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.resetState
+        cyclomatic complexity: 1
+
+ALARM   AuthViewModel.checkAuthStatus
+        cyclomatic complexity: 9
+
+
+lib/features/auth/ui/widgets/register_screen.dart:
+ALARM   RegisterScreen.RegisterScreen
+        cyclomatic complexity: 1
+
+ALARM   RegisterScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _RegisterScreenState.initState
+        cyclomatic complexity: 1
+
+ALARM   _RegisterScreenState.dispose
+        cyclomatic complexity: 1
+
+ALARM   _RegisterScreenState._onRegister
+        cyclomatic complexity: 7
+
+ALARM   _RegisterScreenState.build
+        cyclomatic complexity: 4
+
+
+lib/features/auth/ui/widgets/login_screen.dart:
+ALARM   LoginScreen.LoginScreen
+        cyclomatic complexity: 1
+
+ALARM   LoginScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _LoginScreenState.dispose
+        cyclomatic complexity: 1
+
+ALARM   _LoginScreenState._onLogin
+        cyclomatic complexity: 8
+
+ALARM   _LoginScreenState.build
+        cyclomatic complexity: 2
+
+
+lib/features/auth/infra/datasources/auth_remote_datasource.dart:
+ALARM   AuthRemoteDataSource.login
+        cyclomatic complexity: 1
+
+ALARM   AuthRemoteDataSource.register
+        cyclomatic complexity: 1
+
+ALARM   ParseAuthDataSourceImpl.login
+        cyclomatic complexity: 4
+
+ALARM   ParseAuthDataSourceImpl.register
+        cyclomatic complexity: 4
+
+
+lib/features/auth/infra/datasources/user_remote_datasource.dart:
+ALARM   UserRemoteDataSource.searchPatients
+        cyclomatic complexity: 1
+
+ALARM   UserRemoteDataSourceImpl.searchPatients
+        cyclomatic complexity: 20
+
+
+lib/features/auth/infra/repositories/auth_repository_impl.dart:
+ALARM   AuthRepositoryImpl.AuthRepositoryImpl
+        cyclomatic complexity: 1
+
+ALARM   AuthRepositoryImpl.login
+        cyclomatic complexity: 3
+
+ALARM   AuthRepositoryImpl.register
+        cyclomatic complexity: 3
+
+
+lib/features/auth/infra/repositories/user_repository_impl.dart:
+ALARM   UserRepositoryImpl.UserRepositoryImpl
+        cyclomatic complexity: 1
+
+ALARM   UserRepositoryImpl.searchPatients
+        cyclomatic complexity: 3
+
+
+lib/features/auth/infra/models/user_model.dart:
+ALARM   UserModel.UserModel
+        cyclomatic complexity: 1
+
+ALARM   UserModel.fromParse
+        cyclomatic complexity: 4
+
+
+lib/features/auth/domain/repositories/auth_repository.dart:
+ALARM   AuthRepository.login
+        cyclomatic complexity: 1
+
+ALARM   AuthRepository.register
+        cyclomatic complexity: 1
+
+
+lib/features/auth/domain/repositories/user_repository.dart:
+ALARM   UserRepository.searchPatients
+        cyclomatic complexity: 1
+
+
+lib/features/auth/domain/usecases/register_usecase.dart:
+ALARM   RegisterUseCase.RegisterUseCase
+        cyclomatic complexity: 1
+
+ALARM   RegisterUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/auth/domain/usecases/login_usecase.dart:
+ALARM   LoginUseCase.LoginUseCase
+        cyclomatic complexity: 1
+
+ALARM   LoginUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/auth/domain/usecases/search_patients_usecase.dart:
+ALARM   SearchPatientsUseCase.SearchPatientsUseCase
+        cyclomatic complexity: 1
+
+ALARM   SearchPatientsUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/auth/domain/entities/user_entity.dart:
+ALARM   UserEntity.UserEntity
+        cyclomatic complexity: 1
+
+ALARM   UserEntity.props
+        cyclomatic complexity: 1
+
+
+lib/features/doctor/ui/widgets/patient_evolution_chart.dart:
+ALARM   PatientEvolutionChart.PatientEvolutionChart
+        cyclomatic complexity: 1
+
+ALARM   PatientEvolutionChart.build
+        cyclomatic complexity: 11
+
+
+lib/features/profile/ui/view_model/profile_view_model.dart:
+ALARM   ProfileViewModel.ProfileViewModel
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.isLoading
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.isEditing
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.profile
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.errorMessage
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.loadProfile
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.toggleEdit
+        cyclomatic complexity: 1
+
+ALARM   ProfileViewModel.saveProfile
+        cyclomatic complexity: 2
+
+ALARM   ProfileViewModel.logout
+        cyclomatic complexity: 1
+
+
+lib/features/profile/ui/widgets/profile_screen.dart:
+ALARM   ProfileScreen.ProfileScreen
+        cyclomatic complexity: 1
+
+ALARM   ProfileScreen.createState
+        cyclomatic complexity: 1
+
+ALARM   _ProfileScreenState.initState
+        cyclomatic complexity: 1
+
+ALARM   _ProfileScreenState.dispose
+        cyclomatic complexity: 1
+
+ALARM   _ProfileScreenState._updateControllers
+        cyclomatic complexity: 10
+
+ALARM   _ProfileScreenState.build
+        cyclomatic complexity: 13
+
+
+lib/features/profile/infra/datasources/profile_remote_datasource.dart:
+ALARM   ProfileRemoteDataSource.getProfile
+        cyclomatic complexity: 1
+
+ALARM   ProfileRemoteDataSource.updateProfile
+        cyclomatic complexity: 1
+
+ALARM   ProfileRemoteDataSource.logout
+        cyclomatic complexity: 1
+
+ALARM   ParseProfileDataSourceImpl.getProfile
+        cyclomatic complexity: 6
+
+ALARM   ParseProfileDataSourceImpl.updateProfile
+        cyclomatic complexity: 7
+
+ALARM   ParseProfileDataSourceImpl.logout
+        cyclomatic complexity: 5
+
+
+lib/features/profile/infra/repositories/profile_repository_impl.dart:
+ALARM   ProfileRepositoryImpl.ProfileRepositoryImpl
+        cyclomatic complexity: 1
+
+ALARM   ProfileRepositoryImpl.getProfile
+        cyclomatic complexity: 3
+
+ALARM   ProfileRepositoryImpl.updateProfile
+        cyclomatic complexity: 3
+
+ALARM   ProfileRepositoryImpl.logout
+        cyclomatic complexity: 3
+
+
+lib/features/profile/infra/models/profile_model.dart:
+ALARM   ProfileModel.ProfileModel
+        cyclomatic complexity: 1
+
+ALARM   ProfileModel.fromParse
+        cyclomatic complexity: 6
+
+
+lib/features/profile/domain/repositories/profile_repository.dart:
+ALARM   ProfileRepository.getProfile
+        cyclomatic complexity: 1
+
+ALARM   ProfileRepository.updateProfile
+        cyclomatic complexity: 1
+
+ALARM   ProfileRepository.logout
+        cyclomatic complexity: 1
+
+
+lib/features/profile/domain/usecases/update_profile_usecase.dart:
+ALARM   UpdateProfileUseCase.UpdateProfileUseCase
+        cyclomatic complexity: 1
+
+ALARM   UpdateProfileUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/profile/domain/usecases/logout_usecase.dart:
+ALARM   LogoutUseCase.LogoutUseCase
+        cyclomatic complexity: 1
+
+ALARM   LogoutUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/profile/domain/usecases/get_profile_usecase.dart:
+ALARM   GetProfileUseCase.GetProfileUseCase
+        cyclomatic complexity: 1
+
+ALARM   GetProfileUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/profile/domain/entities/profile_entity.dart:
+ALARM   ProfileEntity.ProfileEntity
+        cyclomatic complexity: 1
+
+ALARM   ProfileEntity.props
+        cyclomatic complexity: 1
+
+
+lib/features/check_in/ui/view_model/check_in_view_model.dart:
+ALARM   CheckInViewModel.CheckInViewModel
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.isLoading
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.isCheckingStatus
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.isCheckedInToday
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.errorMessage
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.history
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.checkStatus
+        cyclomatic complexity: 1
+
+ALARM   CheckInViewModel.pickImage
+        cyclomatic complexity: 11
+
+ALARM   CheckInViewModel.doCheckIn
+        cyclomatic complexity: 1
+
+
+lib/features/check_in/ui/widgets/daily_check_in_button.dart:
+ALARM   DailyCheckInButton.DailyCheckInButton
+        cyclomatic complexity: 1
+
+ALARM   DailyCheckInButton.createState
+        cyclomatic complexity: 1
+
+ALARM   _DailyCheckInButtonState.initState
+        cyclomatic complexity: 1
+
+ALARM   _DailyCheckInButtonState.didUpdateWidget
+        cyclomatic complexity: 2
+
+ALARM   _DailyCheckInButtonState.build
+        cyclomatic complexity: 6
+
+
+lib/features/check_in/ui/widgets/check_in_dialog.dart:
+ALARM   CheckInDialog.CheckInDialog
+        cyclomatic complexity: 1
+
+ALARM   CheckInDialog.createState
+        cyclomatic complexity: 1
+
+ALARM   _CheckInDialogState.dispose
+        cyclomatic complexity: 1
+
+ALARM   _CheckInDialogState._pickImage
+        cyclomatic complexity: 2
+
+ALARM   _CheckInDialogState.build
+        cyclomatic complexity: 5
+
+ALARM   _CheckInDialogState._getFeelingIcon
+        cyclomatic complexity: 2
+
+ALARM   _CheckInDialogState._getFeelingColor
+        cyclomatic complexity: 2
+
+
+lib/features/check_in/infra/datasources/check_in_remote_datasource.dart:
+ALARM   CheckInRemoteDataSource.create
+        cyclomatic complexity: 1
+
+ALARM   CheckInRemoteDataSource.getByPlan
+        cyclomatic complexity: 1
+
+ALARM   CheckInRemoteDataSource.getByPlanIds
+        cyclomatic complexity: 1
+
+ALARM   CheckInRemoteDataSource.hasCheckInToday
+        cyclomatic complexity: 1
+
+ALARM   ParseCheckInDataSourceImpl.create
+        cyclomatic complexity: 10
+
+ALARM   ParseCheckInDataSourceImpl.getByPlan
+        cyclomatic complexity: 7
+
+ALARM   ParseCheckInDataSourceImpl.getByPlanIds
+        cyclomatic complexity: 7
+
+ALARM   ParseCheckInDataSourceImpl.hasCheckInToday
+        cyclomatic complexity: 2
+
+
+lib/features/check_in/infra/repositories/check_in_repository_impl.dart:
+ALARM   CheckInRepositoryImpl.CheckInRepositoryImpl
+        cyclomatic complexity: 1
+
+ALARM   CheckInRepositoryImpl.createCheckIn
+        cyclomatic complexity: 3
+
+ALARM   CheckInRepositoryImpl.getCheckInsForPlan
+        cyclomatic complexity: 3
+
+ALARM   CheckInRepositoryImpl.getCheckInsByPatient
+        cyclomatic complexity: 3
+
+ALARM   CheckInRepositoryImpl.hasCheckInToday
+        cyclomatic complexity: 3
+
+
+lib/features/check_in/infra/models/check_in_model.dart:
+ALARM   CheckInModel.CheckInModel
+        cyclomatic complexity: 1
+
+ALARM   CheckInModel.fromParse
+        cyclomatic complexity: 5
+
+
+lib/features/check_in/domain/repositories/check_in_repository.dart:
+ALARM   CheckInRepository.createCheckIn
+        cyclomatic complexity: 1
+
+ALARM   CheckInRepository.getCheckInsForPlan
+        cyclomatic complexity: 1
+
+ALARM   CheckInRepository.getCheckInsByPatient
+        cyclomatic complexity: 1
+
+ALARM   CheckInRepository.hasCheckInToday
+        cyclomatic complexity: 1
+
+
+lib/features/check_in/domain/usecases/perform_check_in_usecase.dart:
+ALARM   PerformCheckInUseCase.PerformCheckInUseCase
+        cyclomatic complexity: 1
+
+ALARM   PerformCheckInUseCase.call
+        cyclomatic complexity: 4
+
+ALARM   PerformCheckInUseCase.isSameDay
+        cyclomatic complexity: 3
+
+
+lib/features/check_in/domain/usecases/get_patient_check_ins_usecase.dart:
+ALARM   GetPatientCheckInsUseCase.GetPatientCheckInsUseCase
+        cyclomatic complexity: 1
+
+ALARM   GetPatientCheckInsUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/check_in/domain/usecases/get_plan_history_usecase.dart:
+ALARM   GetPlanHistoryUseCase.GetPlanHistoryUseCase
+        cyclomatic complexity: 1
+
+ALARM   GetPlanHistoryUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/check_in/domain/usecases/has_check_in_today_usecase.dart:
+ALARM   HasCheckInTodayUseCase.HasCheckInTodayUseCase
+        cyclomatic complexity: 1
+
+ALARM   HasCheckInTodayUseCase.call
+        cyclomatic complexity: 1
+
+
+lib/features/check_in/domain/entities/check_in_entity.dart:
+ALARM   CheckInEntity.CheckInEntity
+        cyclomatic complexity: 1
+
+ALARM   CheckInEntity.props
+        cyclomatic complexity: 1
+
+
+lib/main.dart:
+ALARM   main
+        cyclomatic complexity: 1
+
+ALARM   MedicareApp.MedicareApp
+        cyclomatic complexity: 1
+
+ALARM   MedicareApp.build
+        cyclomatic complexity: 4
+
+
+lib/injection_container.dart:
+ALARM   init
+        cyclomatic complexity: 5
+
+
