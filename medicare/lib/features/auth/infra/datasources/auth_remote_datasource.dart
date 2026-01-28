@@ -1,7 +1,8 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
-import '../../../core/errors/exceptions.dart';
+import 'package:medicare/features/core/errors/exceptions.dart';
 import '../models/user_model.dart';
+import 'auth_parse_client.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
@@ -15,12 +16,14 @@ abstract class AuthRemoteDataSource {
 }
 
 class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
+  final AuthParseClient client;
+
+  ParseAuthDataSourceImpl({required this.client});
+
   @override
   Future<UserModel> login(String email, String password) async {
-    final user = ParseUser(email, password, null);
-
     // O ParseSDK faz a mágica de rede aqui
-    var response = await user.login();
+    var response = await client.login(email, password);
 
     if (response.success) {
       return UserModel.fromParse(response.result as ParseUser);
@@ -39,12 +42,12 @@ class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
     String password,
     String type,
   ) async {
-    final user = ParseUser.createUser(email, password, email);
+    final user = client.createUser(email, password, email);
 
     user.set<String>('fullName', name);
     user.set<String>('userType', type);
 
-    var response = await user.signUp();
+    var response = await client.signUp(user);
 
     if (response.success) {
       // Define permissões de segurança APÓS o login/criação
@@ -56,7 +59,7 @@ class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
       acl.setPublicWriteAccess(allowed: false); // Só o dono pode editar
       currentUser.setACL(acl);
 
-      await currentUser.save();
+      await client.save(currentUser);
 
       return UserModel.fromParse(currentUser);
     } else {
@@ -69,9 +72,9 @@ class ParseAuthDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel?> getCurrentUser() async {
     try {
-      final user = await ParseUser.currentUser() as ParseUser?;
+      final user = await client.currentUser();
       if (user != null && user.sessionToken != null) {
-        final response = await user.getUpdatedUser();
+        final response = await client.getUpdatedUser(user);
         if (response.success && response.result != null) {
           return UserModel.fromParse(response.result as ParseUser);
         }

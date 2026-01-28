@@ -10,6 +10,7 @@ import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/domain/usecases/search_patients_usecase.dart';
 import 'features/auth/infra/datasources/auth_remote_datasource.dart';
+import 'features/auth/infra/datasources/auth_parse_client.dart';
 import 'features/auth/infra/datasources/user_remote_datasource.dart';
 import 'features/auth/infra/repositories/auth_repository_impl.dart';
 import 'features/auth/infra/repositories/user_repository_impl.dart';
@@ -96,8 +97,9 @@ Future<void> init() async {
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(sl()));
 
   // DataSource
+  sl.registerLazySingleton<AuthParseClient>(() => AuthParseClientImpl());
   sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => ParseAuthDataSourceImpl(),
+    () => ParseAuthDataSourceImpl(client: sl()),
   );
   sl.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSourceImpl(),
